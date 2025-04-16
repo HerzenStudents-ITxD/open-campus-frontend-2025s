@@ -1,20 +1,29 @@
-import { Link } from 'react-router-dom';
+import { Link } from "react-router-dom";
+import QuickActions from "../components/Dashboard/QuickActions";
+import UpcomingEvents from "../components/Dashboard/UpcomingEvents";
+import MiniCalendar from "../components/Dashboard/MiniCalendar";
 
-const AdminDashboard = () => {
+function AdminDashboard() {
   return (
     <div>
-      <h1>Панель администрирования</h1>
-      <p>Добро пожаловать в панель управления админом.</p>
+      <h1>Панель администратора</h1>
+
       <nav>
         <ul>
           <li><Link to="/admin/events">Редактировать мероприятия</Link></li>
           <li><Link to="/admin/locations">Редактировать локации</Link></li>
-          <li><Link to="/admin/about">Редактировать информацию о пространстве</Link></li>
-          <li><Link to="/admin/editor-account">Аккаунт редактора</Link></li>
+          <li><Link to="/admin/about">Редактировать “О пространстве”</Link></li>
+          <li><Link to="/admin/editor-account">Личный кабинет редактора</Link></li>
         </ul>
       </nav>
+
+      <hr />
+
+      <QuickActions />
+      <UpcomingEvents />
+      <MiniCalendar />
     </div>
   );
-};
+}
 
 export default AdminDashboard;

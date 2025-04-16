@@ -1,15 +1,23 @@
-import { Link } from 'react-router-dom';
+import { Link } from "react-router-dom";
+import EditorInfoForm from "../components/EditorAccount/EditorInfoForm";
+import PasswordChangeForm from "../components/EditorAccount/PasswordChangeForm";
 
-const AdminEditorAccount = () => {
+function AdminEditorAccount() {
   return (
     <div>
       <h1>Личный кабинет редактора</h1>
-      <p>Здесь редактор может управлять своим аккаунтом.</p>
+
       <nav>
-        <Link to="/admin">Назад в панель администрирования</Link>
+        <Link to="/admin">← Назад на главную панель</Link>
       </nav>
+
+      <hr />
+
+      <EditorInfoForm />
+      <PasswordChangeForm />
     </div>
   );
-};
+}
 
 export default AdminEditorAccount;
+

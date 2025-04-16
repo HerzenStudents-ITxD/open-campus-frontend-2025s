@@ -1,15 +1,26 @@
-import { Link } from 'react-router-dom';
+import { Link } from "react-router-dom";
+import AboutContentEditor from "../components/About/AboutContentEditor";
+import ReviewsList from "../components/About/ReviewsList";
+import ReviewApproveForm from "../components/About/ReviewApproveForm";
+import PhotoGalleryEditor from "../components/About/PhotoGalleryEditor";
 
-const AdminAbout = () => {
+function AdminAbout() {
   return (
     <div>
-      <h1>Редактирование информации о проекте</h1>
-      <p>Здесь вы можете редактировать информацию о пространстве.</p>
+      <h1>Редактирование раздела “О пространстве”</h1>
+
       <nav>
-        <Link to="/admin">Назад в панель администрирования</Link>
+        <Link to="/admin">← Назад на главную панель</Link>
       </nav>
+
+      <hr />
+
+      <AboutContentEditor />
+      <PhotoGalleryEditor />
+      <ReviewsList />
+      <ReviewApproveForm />
     </div>
   );
-};
+}
 
 export default AdminAbout;

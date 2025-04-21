@@ -8,10 +8,6 @@ function AdminLocations() {
     <div>
       <h1>Редактирование локаций</h1>
 
-      <nav>
-        <Link to="/admin">← Назад на главную панель</Link>
-      </nav>
-
       <hr />
 
       <LocationForm />

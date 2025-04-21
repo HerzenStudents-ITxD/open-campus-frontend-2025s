@@ -6,11 +6,7 @@ function AdminEditorAccount() {
   return (
     <div>
       <h1>Личный кабинет редактора</h1>
-
-      <nav>
-        <Link to="/admin">← Назад на главную панель</Link>
-      </nav>
-
+      
       <hr />
 
       <EditorInfoForm />

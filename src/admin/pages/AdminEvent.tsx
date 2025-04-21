@@ -8,10 +8,6 @@ function AdminEvent() {
     <div>
       <h1>Редактирование мероприятий</h1>
 
-      <nav>
-        <Link to="/admin">← Назад на главную панель</Link>
-      </nav>
-
       <hr />
 
       <EventForm />

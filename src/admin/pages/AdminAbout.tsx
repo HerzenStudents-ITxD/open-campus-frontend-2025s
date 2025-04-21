@@ -9,10 +9,6 @@ function AdminAbout() {
     <div>
       <h1>Редактирование раздела “О пространстве”</h1>
 
-      <nav>
-        <Link to="/admin">← Назад на главную панель</Link>
-      </nav>
-
       <hr />
 
       <AboutContentEditor />

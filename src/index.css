@@ -76,7 +76,7 @@ button:focus-visible {
 
 .admin-wrapper {
   background-color: #fff;
-  color: #000;
+  color: #1D213C;
   min-height: 100vh;
   padding: 0;
   margin: 0;
@@ -88,7 +88,36 @@ button:focus-visible {
 }
 
 .admin-wrapper a {
-  color: #0d6efd;
+  color: #1D213C;
   text-decoration: none;
 }
 
+.admin-wrapper a:hover {
+  color: #F44E1A;
+  text-decoration: none;
+}
+
+.admin-wrapper .btn {
+  background-color: transparent;
+  color: #1D213C;
+  border: 2px solid #1D213C;
+  transition: background-color 0.3s, border-color 0.3s;
+}
+
+.admin-wrapper .btn:hover {
+  color: #fff;
+  background-color: #d53e12;
+  border-color: #d53e12;
+}
+
+.admin-wrapper .nav-link {
+  color: #1D213C !important;  /* Синий цвет по умолчанию */
+}
+
+.admin-wrapper .nav-link:hover {
+  color: #d53e12 !important;  /* Оранжевый цвет на hover */
+}
+
+.admin-wrapper .nav-link.active {
+  color: #1D213C !important;  /* Убираем синий после активации */
+}

@@ -1,20 +1,15 @@
 import Sidebar from "../components/Shared/Sidebar";
-import { Outlet } from "react-router-dom"; // Для рендеринга дочерних маршрутов
+import { Outlet } from "react-router-dom";
 
 function AdminLayout() {
   return (
-    <div className="admin-wrapper">
-      <div className="d-flex">
-        {/* Sidebar */}
-        <div className="admin-sidebar">
-          <Sidebar />
-        </div>
+    <div className="admin-wrapper d-flex">
+      <div className="admin-sidebar hover-expand">
+        <Sidebar />
+      </div>
 
-        {/* Main Content */}
-        <div className="admin-content">
-          {/* Здесь будут рендериться дочерние компоненты */}
-          <Outlet />
-        </div>
+      <div className="admin-content flex-grow-1">
+        <Outlet />
       </div>
     </div>
   );

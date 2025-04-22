@@ -121,3 +121,88 @@ button:focus-visible {
 .admin-wrapper .nav-link.active {
   color: #1D213C !important;  /* Убираем синий после активации */
 }
+
+.admin-wrapper {
+  position: relative;
+}
+
+.toggle-btn {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  z-index: 1000;
+  background-color: #F44E1A;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 0.3rem 0.6rem;
+  cursor: pointer;
+}
+
+.admin-sidebar {
+  width: 220px;
+  transition: width 0.3s ease;
+}
+
+.admin-sidebar.collapsed {
+  width: 0;
+  overflow: hidden;
+  transition: width 0.3s ease;
+}
+
+.admin-content {
+  padding: 20px;
+  transition: margin-left 0.3s ease;
+}
+
+.admin-sidebar.hover-expand {
+  width: 80px;
+  transition: width 0.3s ease;
+  overflow-x: hidden;
+}
+
+.admin-sidebar.hover-expand:hover {
+  width: 240px;
+}
+
+.sidebar-inner span {
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  margin-left: 8px;
+}
+
+.admin-sidebar:hover .sidebar-inner span {
+  opacity: 1;
+}
+
+.sidebar-inner .nav-link {
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
+}
+
+.logo-full,
+.logo-small {
+  display: block;
+  margin: 0 auto;
+  transition: opacity 0.3s ease;
+}
+
+/* По умолчанию показываем маленький логотип, прячем большой */
+.admin-sidebar.hover-expand .logo-full {
+  display: none;
+}
+
+.admin-sidebar.hover-expand .logo-small {
+  display: block;
+}
+
+/* При наведении на сам .admin-sidebar — переключаем логотипы */
+.admin-sidebar.hover-expand:hover .logo-full {
+  display: block;
+}
+
+.admin-sidebar.hover-expand:hover .logo-small {
+  display: none;
+}
+

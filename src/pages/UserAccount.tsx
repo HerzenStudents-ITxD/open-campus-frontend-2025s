@@ -1,56 +1,94 @@
 // src/pages/UserAccount.tsx
-import React from 'react';
-import { Link } from 'react-router-dom';
-import 'bootstrap/dist/css/bootstrap.min.css';
+import React, { useEffect, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import '../styles/UserAccount.css';
+import logoImage from '../assets/logo.png';
 
 export default function UserAccount() {
+  const [fullName, setFullName] = useState(localStorage.getItem("fullName") || "");
+  const [position, setPosition] = useState(localStorage.getItem("position") || "");
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    localStorage.setItem("fullName", fullName);
+  }, [fullName]);
+
+  useEffect(() => {
+    localStorage.setItem("position", position);
+  }, [position]);
+
+  const handleLogout = () => {
+    localStorage.removeItem("fullName");
+    localStorage.removeItem("position");
+    navigate("/"); // или /login, если есть авторизация
+  };
+
   return (
-    <div className="container d-flex flex-column align-items-center mt-4" style={{ maxWidth: '800px' }}>
-      <h1 className="mb-4 text-center">Профиль</h1>
-      
-      <div className="d-flex justify-content-between align-items-center mb-4 w-100">
-        <div>
-          <p className="mb-1"><strong>ФИО</strong></p>
-          <p className="mb-0"><strong>Должность</strong></p>
+    <div className="user-account-container">
+      <div className="sidebar">
+        <div className="logo">
+          <img src={logoImage} alt="Логотип" className="logo-img" />
         </div>
-        <button className="btn btn-outline-secondary">Загрузить фото</button>
+        <Link to="/" className="btn btn-orange">← На главную</Link>
+        <a href="#" onClick={handleLogout} className="logout-link">Выйти из аккаунта</a>
       </div>
 
-      <hr className="w-100 my-4" />
+      <div className="main-content">
+        <h1 className="profile-header">Профиль</h1>
 
-      <div className="mb-5 w-100">
-        <h2 className="mb-3 text-center">Мои брони</h2>
-        
-        <div className="card">
-          <div className="card-body p-0">
-            <div className="d-flex justify-content-between p-3 border-bottom">
-              <strong>Мероприятие</strong>
-              <div className="d-flex gap-5">
-                <strong>Забронировано</strong>
-                <strong>Статус</strong>
-              </div>
-            </div>
-            
-            <div className="d-flex justify-content-between p-3 border-bottom">
-              <div style={{ width: '60%' }}>
-                Цикл лекций "Искусство XX века". Блок первый. Искусство авангарда. Лекция первая. Ранний европейский авангард
-              </div>
-              <div className="d-flex gap-5">
-                <div>16.11.2025</div>
-                <div className="text-success">Подтверждено</div>
-              </div>
-            </div>
-            
-            <div className="p-3 text-center">
-              <Link to="/events" className="text-decoration-none">
-                <strong>Посетите больше мероприятий!</strong> <span className="text-primary">Подробнее</span>
-              </Link>
-            </div>
+        <div className="profile-info">
+          <div className="photo-placeholder">Загрузить фото</div>
+          <div className="form-fields">
+            <label>ФИО</label>
+            <input
+              type="text"
+              className="form-control custom-select"
+              value={fullName}
+              onChange={(e) => setFullName(e.target.value)}
+              placeholder="Введите ФИО"
+            />
+
+            <label>Должность</label>
+            <select
+              className="form-control custom-select"
+              value={position}
+              onChange={(e) => setPosition(e.target.value)}
+            >
+              <option value="">Выберите...</option>
+              <option value="student">Студент</option>
+              <option value="teacher">Преподаватель</option>
+              <option value="administrator">Администратор</option>
+            </select>
           </div>
         </div>
-      </div>
 
-      <button className="btn btn-danger w-100" style={{ maxWidth: '200px' }}>Выйти из аккаунта</button>
+        <h2 className="section-title">Мои брони</h2>
+
+        <div className="booking-card">
+          <div className="booking-header">
+            <strong className="col-event">Мероприятие</strong>
+            <strong className="col-booked">Забронировано</strong>
+            <strong className="col-status">Статус</strong>
+          </div>
+
+          <div className="booking-content">
+            <div className="col-event event-details">
+              Цикл лекций "Искусство XX века". Блок первый. Искусство авангарда. Лекция первая. Ранний европейский авангард
+            </div>
+            <div className="col-booked centered-text">16.11.2025</div>
+            <div className="col-status centered-text text-success">Подтверждено</div>
+          </div>
+
+          <div className="booking-actions">
+            <Link to="/events" className="btn-orange">Подробнее</Link>
+          </div>
+        </div>
+
+        <div className="more-events">
+          <span>Посетите больше мероприятий!</span>
+          <Link to="/events" className="btn-dark-custom">Мероприятия</Link>
+        </div>
+      </div>
     </div>
   );
 }

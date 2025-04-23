@@ -1,4 +1,4 @@
-import { Routes, Route, Link, useLocation } from "react-router-dom";
+import { Routes, Route, Link, useLocation, Navigate } from "react-router-dom";
 import Home from "./pages/Home";
 import Events from "./pages/Events";
 import Locations from "./pages/Locations";
@@ -9,10 +9,14 @@ import NotFound from "./pages/NotFound";
 
 // Страницы админки
 import AdminDashboard from "./admin/pages/AdminDashBoard";
+import AdminHome from "./admin/pages/AdminHome";
 import AdminEvent from "./admin/pages/AdminEvent";
 import AdminLocations from "./admin/pages/AdminLocations";
 import AdminAbout from "./admin/pages/AdminAbout";
 import AdminEditorAccount from "./admin/pages/AdminEditorAccount";
+
+// Импорт AdminLayout
+import AdminLayout from "./admin/layouts/AdminLayout";
 
 function AppRoutes() {
   const location = useLocation();
@@ -20,20 +24,16 @@ function AppRoutes() {
 
   return (
     <>
-      <nav style={{ marginBottom: "20px" }}>
-        {!isAdminPage ? (
-          <>
-            <Link to="/">Главная</Link> |{" "}
-            <Link to="/events">Мероприятия</Link> |{" "}
-            <Link to="/locations">Локации</Link> |{" "}
-            <Link to="/about">О пространстве</Link> |{" "}
-            <Link to="/user-account">Аккаунт пользователя</Link> |{" "}
-            <Link to="/admin">Аккаунт редактора</Link>
-          </>
-        ) : (
-          <Link to="/">Вернуться на сайт Открытого кампуса</Link>
-        )}
-      </nav>
+      {!isAdminPage && (
+        <nav style={{ marginBottom: "20px" }}>
+          <Link to="/">Главная</Link> |{" "}
+          <Link to="/events">Мероприятия</Link> |{" "}
+          <Link to="/locations">Локации</Link> |{" "}
+          <Link to="/about">О пространстве</Link> |{" "}
+          <Link to="/user-account">Аккаунт пользователя</Link> |{" "}
+          <Link to="/admin/dashboard">Аккаунт редактора</Link>
+        </nav>
+      )}
 
       <Routes>
         {/* Обычные страницы */}
@@ -46,12 +46,15 @@ function AppRoutes() {
         <Route path="*" element={<NotFound />} />
         <Route path="/profile" element={<UserAccount />} />
 
-        {/* Админка */}
-        <Route path="/admin" element={<AdminDashboard />} />
-        <Route path="/admin/events" element={<AdminEvent />} />
-        <Route path="/admin/locations" element={<AdminLocations />} />
-        <Route path="/admin/about" element={<AdminAbout />} />
-        <Route path="/admin/editor-account" element={<AdminEditorAccount />} />
+        {/* Админка с AdminLayout */}
+        <Route path="/admin" element={<AdminLayout />}>
+          <Route path="home" element={<AdminHome />} />
+          <Route path="dashboard" element={<AdminDashboard />} />
+          <Route path="events" element={<AdminEvent />} />
+          <Route path="locations" element={<AdminLocations />} />
+          <Route path="about" element={<AdminAbout />} />
+          <Route path="editor-account" element={<AdminEditorAccount />} />
+        </Route>
       </Routes>
     </>
   );

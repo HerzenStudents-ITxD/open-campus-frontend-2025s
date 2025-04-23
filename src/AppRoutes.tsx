@@ -44,6 +44,7 @@ function AppRoutes() {
         <Route path="/about-event" element={<AboutEvent />} />
         <Route path="/user-account" element={<UserAccount />} />
         <Route path="*" element={<NotFound />} />
+        <Route path="/profile" element={<UserAccount />} />
 
         {/* Админка с AdminLayout */}
         <Route path="/admin" element={<AdminLayout />}>

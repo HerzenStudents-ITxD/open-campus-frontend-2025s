@@ -55,13 +55,35 @@
 }
 
 .btn-dark-custom:hover {
+  background-color: #093251;
+  color: #ffffff;
+}
+
+.save-btn {
+  background-color: #ccc;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  padding: 3px 10px;
+  cursor: not-allowed;
+  transition: background-color 0.2s ease;
+  margin-top: 1px; /* Уменьшен отступ сверху */
+}
+
+.save-btn.active {
+  background-color: #1D213C;
+  color: white;
+  cursor: pointer;
+}
+
+.save-btn.active:hover {
   background-color: #1d2124;
-  color: #e5e5e5;
 }
 
 .logout-link {
   margin-top: auto;
-  color: #a00000;
+  color: #e6451b;
   text-decoration: none;
   text-align: center;
   display: block;
@@ -133,7 +155,7 @@
 
 .booking-header {
   display: flex;
-  font-weight: bold;
+  font-weight: 500;
   border-bottom: 1px solid #ccc;
   padding-bottom: 0.5rem;
 }
@@ -194,5 +216,11 @@
 .custom-select option {
   color: #1D213C;
   background-color: #ffffff;
+}
+
+.error-message {
+  color: #e6451b;
+  font-size: 0.9rem;
+  margin-top: 5px;
 }
 

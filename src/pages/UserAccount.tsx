@@ -1,27 +1,50 @@
-// src/pages/UserAccount.tsx
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react'; 
 import { Link, useNavigate } from 'react-router-dom';
 import '../styles/UserAccount.css';
 import logoImage from '../assets/logo.png';
 
 export default function UserAccount() {
-  const [fullName, setFullName] = useState(localStorage.getItem("fullName") || "");
-  const [position, setPosition] = useState(localStorage.getItem("position") || "");
   const navigate = useNavigate();
 
-  useEffect(() => {
-    localStorage.setItem("fullName", fullName);
-  }, [fullName]);
+  const [fullName, setFullName] = useState('');
+  const [position, setPosition] = useState('');
+  const [isSaved, setIsSaved] = useState(false);
+  const [error, setError] = useState('');
 
   useEffect(() => {
+    const storedFullName = localStorage.getItem("fullName");
+    const storedPosition = localStorage.getItem("position");
+    if (storedFullName && storedPosition) {
+      setFullName(storedFullName);
+      setPosition(storedPosition);
+      setIsSaved(true);
+    }
+  }, []);
+
+  const validateFullName = (name: string) => {
+    const namePattern = /^[A-ZА-ЯЁ][a-zа-яё]+ [A-ZА-ЯЁ][a-zа-яё]+ [A-ZА-ЯЁ][a-zа-яё]+$/;
+    return namePattern.test(name);
+  };
+
+  const handleSave = () => {
+    if (!validateFullName(fullName)) {
+      setError('Введите корректные данные');
+      return;
+    }
+
+    localStorage.setItem("fullName", fullName);
     localStorage.setItem("position", position);
-  }, [position]);
+    setIsSaved(true);
+    setError('');
+  };
 
   const handleLogout = () => {
     localStorage.removeItem("fullName");
     localStorage.removeItem("position");
-    navigate("/"); // или /login, если есть авторизация
+    navigate("/");
   };
+
+  const isFormComplete = fullName.trim() !== '' && position.trim() !== '';
 
   return (
     <div className="user-account-container">
@@ -29,7 +52,7 @@ export default function UserAccount() {
         <div className="logo">
           <img src={logoImage} alt="Логотип" className="logo-img" />
         </div>
-        <Link to="/" className="btn btn-orange">← На главную</Link>
+        <Link to="/" className="btn-orange">← На главную</Link>
         <a href="#" onClick={handleLogout} className="logout-link">Выйти из аккаунта</a>
       </div>
 
@@ -46,19 +69,30 @@ export default function UserAccount() {
               value={fullName}
               onChange={(e) => setFullName(e.target.value)}
               placeholder="Введите ФИО"
+              disabled={isSaved}
             />
+            {error && <div className="error-message">{error}</div>}
 
             <label>Должность</label>
             <select
               className="form-control custom-select"
               value={position}
               onChange={(e) => setPosition(e.target.value)}
+              disabled={isSaved}
             >
               <option value="">Выберите...</option>
               <option value="student">Студент</option>
               <option value="teacher">Преподаватель</option>
               <option value="administrator">Администратор</option>
             </select>
+
+            <button
+              className={`save-btn ${isFormComplete && !isSaved ? 'active' : ''}`}
+              disabled={!isFormComplete || isSaved}
+              onClick={handleSave}
+            >
+              Сохранить
+            </button>
           </div>
         </div>
 

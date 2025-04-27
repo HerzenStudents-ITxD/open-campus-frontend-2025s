@@ -1,5 +1,5 @@
 import QuickActions from "../components/Dashboard/QuickActions";
-import UpcomingEvents from "../components/Dashboard/UpcomingEvents";
+import RecentChanges from "../components/Dashboard/RecentChanges";
 import MiniCalendar from "../components/Dashboard/MiniCalendar";
 import { Container, Row, Col } from "react-bootstrap";
 
@@ -11,11 +11,12 @@ function AdminDashboard() {
           {/* Main Content */}
           <Col md={12} className="p-4">
             <h2 className="mb-4">Главная панель</h2>
+            <hr />
 
-            {/* Quick Actions + Upcoming Events */}
-            <Row className="mb-4">
+            {/* Quick Actions + Recent Changes */}
+            <Row className="gx-5 mb-4">
               <Col md={6}><QuickActions /></Col>
-              <Col md={6}><UpcomingEvents /></Col>
+              <Col md={6}><RecentChanges /></Col>
             </Row>
 
             {/* Mini Calendar - отдельная строка */}

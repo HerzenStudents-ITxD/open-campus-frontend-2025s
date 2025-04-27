@@ -6,10 +6,10 @@ function QuickActions() {
     <div className="mb-4">
       <h2>Быстрые действия</h2>
       <div className="d-flex gap-3">
-        <Button variant="primary" as="a" href="/admin/events/create">
+        <Button variant="primary" as="a" href="/admin/events">
           <Calendar size={16} className="me-2" /> Добавить мероприятие
         </Button>
-        <Button variant="secondary" as="a" href="/admin/news/create">
+        <Button variant="secondary" as="a" href="/admin/home">
           <FilePlus size={16} className="me-2" /> Добавить новость
         </Button>
       </div>

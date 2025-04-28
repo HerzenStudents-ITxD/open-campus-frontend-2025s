@@ -9,12 +9,23 @@ function Sidebar() {
   const [isHovered, setIsHovered] = useState(false);
 
   return (
-    <div
-      className="bg-light p-3 d-flex flex-column sidebar-inner"
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-      style={{ height: "100%" }}
-    >
+<div
+  className="bg-light p-3 d-flex flex-column sidebar-inner"
+  onMouseEnter={() => setIsHovered(true)}
+  onMouseLeave={() => setIsHovered(false)}
+  style={{
+    position: "fixed",
+    top: 0,
+    left: 0,
+    height: "100vh",
+    width: isHovered ? "250px" : "80px",
+    overflowX: "hidden",
+    overflowY: "auto",
+    transition: "width 0.3s",
+    zIndex: 1000,
+  }}
+>
+
       {/* Логотип */}
       <div className="text-center mb-4 mt-3">
         {isHovered ? (

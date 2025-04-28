@@ -1,9 +1,24 @@
+import { useState } from "react";
+import EventForm, { EventData } from "../components/Events/EventForm";
 import EventList from "../components/Events/EventList";
-import EventForm from "../components/Events/EventForm";
-import GalleryEditor from "../components/Events/GalleryEditor";
 import { Container, Row, Col } from "react-bootstrap";
 
 function AdminEvent() {
+  const [events, setEvents] = useState<EventData[]>([]);
+
+  const handleAdd = (event: EventData) => {
+    setEvents((prev) => [...prev, event]);
+  };
+
+  const handleUpdate = (updatedEvent: EventData) => {
+    setEvents((prev) => prev.map((event) => (event.id === updatedEvent.id ? updatedEvent : event)));
+  };
+
+  const handleDelete = (id: number, reason: string) => {
+    console.log("Причина удаления:", reason);
+    setEvents((prev) => prev.filter((event) => event.id !== id));
+  };
+
   return (
     <div className="admin-wrapper">
       <Container fluid className="p-0">
@@ -11,9 +26,8 @@ function AdminEvent() {
           <Col md={12} className="p-4">
             <h1>Редактирование мероприятий</h1>
             <hr />
-            <EventForm />
-            <GalleryEditor />
-            <EventList />
+            <EventForm onSubmit={handleAdd} />
+            <EventList events={events} onUpdate={handleUpdate} onDelete={handleDelete} />
           </Col>
         </Row>
       </Container>
@@ -22,4 +36,5 @@ function AdminEvent() {
 }
 
 export default AdminEvent;
+
 

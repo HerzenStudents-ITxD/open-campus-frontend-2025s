@@ -21,7 +21,12 @@ function AdminDashboard() {
 
             {/* Mini Calendar - отдельная строка */}
             <Row>
-              <Col md={12}><MiniCalendar /></Col>
+              <Col md={12}>
+                <MiniCalendar events={[ 
+                  { title: "Конференция", date: "2025-05-03" }, 
+                  { title: "Воркшоп", date: "2025-05-10" }
+                ]} />
+              </Col>
             </Row>
           </Col>
         </Row>

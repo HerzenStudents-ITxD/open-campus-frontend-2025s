@@ -75,3 +75,19 @@
     border-radius: 6px;
   }
   
+  /* Мероприятия */
+.event-day {
+  background-color: #d1e7dd !important; /* светло-зеленый фон */
+  color: #0f5132 !important; /* темно-зеленый текст */
+  border-radius: 6px;
+  font-weight: bold;
+}
+
+.event-dot {
+  width: 6px;
+  height: 6px;
+  background-color: #0d6efd; /* синий цвет точки */
+  border-radius: 50%;
+  margin: 0 auto;
+  margin-top: 4px;
+}

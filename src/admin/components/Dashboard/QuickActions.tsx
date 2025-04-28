@@ -4,7 +4,7 @@ import { Calendar, FilePlus } from "react-feather"; // Иконки
 function QuickActions() {
   return (
     <div className="mb-4">
-      <h2>Быстрые действия</h2>
+      <h3>Быстрые действия</h3>
       <div className="d-flex gap-3">
         <Button variant="primary" as="a" href="/admin/events">
           <Calendar size={16} className="me-2" /> Добавить мероприятие

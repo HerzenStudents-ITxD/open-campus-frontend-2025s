@@ -23,8 +23,8 @@ function AdminDashboard() {
             <Row>
               <Col md={12}>
                 <MiniCalendar events={[ 
-                  { title: "Конференция", date: "2025-05-03" }, 
-                  { title: "Воркшоп", date: "2025-05-10" }
+                  { id: 1, title: "Конференция", date: "2025-05-03" }, 
+                  { id: 2, title: "Воркшоп", date: "2025-05-10" }
                 ]} />
               </Col>
             </Row>

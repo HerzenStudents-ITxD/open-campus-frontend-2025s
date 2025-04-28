@@ -13,7 +13,7 @@ interface BookingOverviewProps {
 function BookingOverview({ bookings }: BookingOverviewProps) {
   return (
     <div className="booking-overview">
-      <h3>Обзор бронирований</h3>
+      <h3 className="mt-5 mb-3">Обзор бронирований</h3>
       <table className="table">
         <thead>
           <tr>

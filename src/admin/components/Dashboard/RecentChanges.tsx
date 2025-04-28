@@ -6,7 +6,7 @@ function RecentChanges() {
 
   return (
     <div className="mb-4">
-      <h2>Последние изменения</h2>
+      <h3>Последние изменения</h3>
       <ul className="list-unstyled">
         {changes.map((change, index) => (
           <li key={index} className="mb-2">

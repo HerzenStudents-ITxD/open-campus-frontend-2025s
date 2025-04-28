@@ -53,7 +53,7 @@ function LocationForm({ onSave }: LocationFormProps) {
 
   return (
     <div className="mb-4">
-      <h4 className="mb-3">Добавить новую локацию</h4>
+      <h3 className="mb-3">Добавить новую локацию</h3>
       <form onSubmit={handleSubmit}>
         <div className="mb-3">
           <label className="form-label">Название локации</label>

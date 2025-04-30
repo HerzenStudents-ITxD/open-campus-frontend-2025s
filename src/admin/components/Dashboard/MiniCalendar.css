@@ -1,0 +1,93 @@
+.mini-calendar-wrapper {
+  /* Убираем ограничение max-width или задаём свой размер */
+  max-width: none;     /* чтобы не ограничивался */
+  width: 100%;         /* тянем на всю доступную ширину */
+  margin: 0 auto;
+}
+  
+  /* Заголовок */
+  .mini-calendar-title {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+  }
+  
+  /* Календарь */
+  .react-calendar {
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    font-family: inherit;
+    background: white;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  }
+  
+  /* Заголовок месяцев */
+  .react-calendar__navigation {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+  }
+  
+  .react-calendar__navigation button {
+    background: none;
+    border: none;
+    font-size: 1.2rem;
+    color: #0d6efd;
+    cursor: pointer;
+  }
+  
+  /* Сетка дней */
+  .react-calendar__month-view__days__day {
+    padding: 0.75rem 0;
+  }
+  
+  /* Будние дни */
+  .react-calendar__tile {
+    font-size: 1rem;
+    color: #212529;
+  }
+  
+  /* Выходные */
+  .weekend {
+    color: #dc3545; /* красный для субботы и воскресенья */
+  }
+  
+  /* Текущий день */
+  .react-calendar__tile--now {
+    background: #e7f1ff;
+    color: #0d6efd;
+    font-weight: bold;
+    border-radius: 6px;
+  }
+  
+  /* Выбранная дата */
+  .react-calendar__tile--active {
+    background: #0d6efd;
+    color: white;
+    border-radius: 6px;
+  }
+  
+  /* Убран фон нажатой плитки */
+  .react-calendar__tile:enabled:hover,
+  .react-calendar__tile:enabled:focus {
+    background: #cfe2ff;
+    color: #0d6efd;
+    border-radius: 6px;
+  }
+  
+  /* Мероприятия */
+.event-day {
+  background-color: #d1e7dd !important; /* светло-зеленый фон */
+  color: #0f5132 !important; /* темно-зеленый текст */
+  border-radius: 6px;
+  font-weight: bold;
+}
+
+.event-dot {
+  width: 6px;
+  height: 6px;
+  background-color: #0d6efd; /* синий цвет точки */
+  border-radius: 50%;
+  margin: 0 auto;
+  margin-top: 4px;
+}

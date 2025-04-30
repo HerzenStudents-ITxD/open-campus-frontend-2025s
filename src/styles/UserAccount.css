@@ -80,6 +80,15 @@
 .save-btn.active:hover {
   background-color: #1d2124;
 }
+.save-btn.disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.save-btn.disabled:hover {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
 
 .logout-link {
   margin-top: auto;
@@ -222,5 +231,21 @@
   color: #e6451b;
   font-size: 0.9rem;
   margin-top: 5px;
+}
+
+.button-group {
+  display: flex;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.button-group .save-btn {
+  flex: 1;
+}
+
+.hint-text.error {
+  color: #e6451b;
+  font-size: 0.8rem;
+  margin-top: 4px;
 }
 

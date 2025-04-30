@@ -10,6 +10,8 @@ export default function UserAccount() {
   const [position, setPosition] = useState('');
   const [isSaved, setIsSaved] = useState(false);
   const [error, setError] = useState('');
+  const [passwordError, setPasswordError] = useState('');
+  const [buttonClicked, setButtonClicked] = useState(false);
 
   useEffect(() => {
     const storedFullName = localStorage.getItem("fullName");
@@ -25,6 +27,32 @@ export default function UserAccount() {
     const namePattern = /^[A-ZА-ЯЁ][a-zа-яё]+ [A-ZА-ЯЁ][a-zа-яё]+ [A-ZА-ЯЁ][a-zа-яё]+$/;
     return namePattern.test(name);
   };
+
+  const handleLogin = () => {
+    if (!validateFullName(fullName) || !position) {
+      setError('Введите корректные данные');
+      return;
+    }
+    localStorage.setItem("fullName", fullName);
+    localStorage.setItem("position", position);
+    setIsSaved(true);
+    setError('');
+    setButtonClicked(true);
+  };
+  
+  const handleRegister = () => {
+    if (!validateFullName(fullName) || !position) {
+      setError('Введите корректные данные');
+      return;
+    }
+    
+    localStorage.setItem("fullName", fullName);
+    localStorage.setItem("position", position);
+
+    alert('Регистрация успешна');
+    setButtonClicked(true);
+  };
+
 
   const handleSave = () => {
     if (!validateFullName(fullName)) {
@@ -73,26 +101,46 @@ export default function UserAccount() {
             />
             {error && <div className="error-message">{error}</div>}
 
-            <label>Должность</label>
-            <select
+            <label>Пароль</label>
+            <input
+              type="password"
               className="form-control custom-select"
               value={position}
-              onChange={(e) => setPosition(e.target.value)}
-              disabled={isSaved}
-            >
-              <option value="">Выберите...</option>
-              <option value="student">Студент</option>
-              <option value="teacher">Преподаватель</option>
-              <option value="administrator">Администратор</option>
-            </select>
 
-            <button
-              className={`save-btn ${isFormComplete && !isSaved ? 'active' : ''}`}
-              disabled={!isFormComplete || isSaved}
-              onClick={handleSave}
-            >
-              Сохранить
-            </button>
+              onChange={(e) => {
+                const value = e.target.value;
+                setPosition(value);
+              
+                const passwordPattern = /^[A-Za-z0-9!@#$%^&*_]*$/;
+                if (!passwordPattern.test(value)) {
+                  setPasswordError('Допустимые символы: латинские буквы A–Z, a–z, цифры 0–9 и спецсимволы (!@#$%^&*_)');
+                } else {
+                  setPasswordError('');
+                }
+              }}
+              placeholder="Введите пароль"
+              disabled={isSaved}
+            />
+            {passwordError && <small className="hint-text error">{passwordError}</small>}
+
+            <div className="button-group">
+              <button
+                className={`save-btn ${isFormComplete && !isSaved ? 'active' : ''} ${buttonClicked ? 'disabled' : ''}`}
+                disabled={!isFormComplete || isSaved || buttonClicked}
+                onClick={handleLogin}
+              >
+                Войти
+              </button>
+              <button
+                className={`save-btn ${isFormComplete && !isSaved ? 'active' : ''} ${buttonClicked ? 'disabled' : ''}`}
+                disabled={!isFormComplete || isSaved || buttonClicked}
+                onClick={handleRegister}
+              >
+                Зарегистрироваться
+              </button>
+
+            </div>
+
           </div>
         </div>
 

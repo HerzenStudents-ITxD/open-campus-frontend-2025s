@@ -50,7 +50,7 @@ export default function NewsForm({ onSubmit }: NewsFormProps) {
   };
 
   return (
-    <div className="mb-5">
+    <div className="mb-6">
       <h3>Добавить новость</h3>
       <Form onSubmit={handleSubmit}>
         <Form.Group className="mb-3" controlId="newsTitle">

@@ -1,7 +1,11 @@
-import React, { useEffect, useState } from 'react'; 
+import React, { useEffect, useState } from 'react';  
 import { Link, useNavigate } from 'react-router-dom';
 import '../styles/UserAccount.css';
 import logoImage from '../assets/logo.png';
+import calendarIcon from '../assets/calendar-icon.png';
+import Calendar from 'react-calendar';
+import '../styles/Calendar.css';
+import ChangePasswordModal from './ChangePasswordModal';
 
 export default function UserAccount() {
   const navigate = useNavigate();
@@ -12,14 +16,40 @@ export default function UserAccount() {
   const [error, setError] = useState('');
   const [passwordError, setPasswordError] = useState('');
   const [buttonClicked, setButtonClicked] = useState(false);
+  const [showCalendar, setShowCalendar] = useState(false);
+  const [photo, setPhoto] = useState<string | null>(null);
+  const [showPasswordModal, setShowPasswordModal] = useState(false);
 
+  const isPasswordValid = (password: string) => {
+    const pattern = /^(?=.*[A-Za-z])[A-Za-z0-9]{8,}$/;
+    return pattern.test(password.trim());
+  };
+
+  const handlePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const result = reader.result as string;
+        setPhoto(result); 
+        localStorage.setItem("photo", result); 
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+  
   useEffect(() => {
     const storedFullName = localStorage.getItem("fullName");
     const storedPosition = localStorage.getItem("position");
+    const storedPhoto = localStorage.getItem("photo");
+
     if (storedFullName && storedPosition) {
       setFullName(storedFullName);
       setPosition(storedPosition);
       setIsSaved(true);
+    }
+    if (storedPhoto) {
+      setPhoto(storedPhoto);
     }
   }, []);
 
@@ -29,7 +59,7 @@ export default function UserAccount() {
   };
 
   const handleLogin = () => {
-    if (!validateFullName(fullName) || !position) {
+    if (!validateFullName(fullName) || !isPasswordValid(position)) {
       setError('Введите корректные данные');
       return;
     }
@@ -41,7 +71,7 @@ export default function UserAccount() {
   };
   
   const handleRegister = () => {
-    if (!validateFullName(fullName) || !position) {
+    if (!validateFullName(fullName) || !isPasswordValid(position)) {
       setError('Введите корректные данные');
       return;
     }
@@ -51,8 +81,8 @@ export default function UserAccount() {
 
     alert('Регистрация успешна');
     setButtonClicked(true);
+    setIsSaved(true); 
   };
-
 
   const handleSave = () => {
     if (!validateFullName(fullName)) {
@@ -69,10 +99,17 @@ export default function UserAccount() {
   const handleLogout = () => {
     localStorage.removeItem("fullName");
     localStorage.removeItem("position");
+    localStorage.removeItem("photo");
+
+    setPhoto(null);       
+    setFullName('');
+    setPosition('');
+    setIsSaved(false);
+    setButtonClicked(false);
     navigate("/");
   };
 
-  const isFormComplete = fullName.trim() !== '' && position.trim() !== '';
+  const isFormComplete = fullName.trim() !== '' && isPasswordValid(position);
 
   return (
     <div className="user-account-container">
@@ -81,6 +118,15 @@ export default function UserAccount() {
           <img src={logoImage} alt="Логотип" className="logo-img" />
         </div>
         <Link to="/" className="btn-orange">← На главную</Link>
+
+        <button className="password" onClick={() => setShowPasswordModal(true)}>
+          Изменить пароль
+        </button>
+
+        {showPasswordModal && (
+        <ChangePasswordModal onClose={() => setShowPasswordModal(false)} />
+      )}
+
         <a href="#" onClick={handleLogout} className="logout-link">Выйти из аккаунта</a>
       </div>
 
@@ -88,7 +134,25 @@ export default function UserAccount() {
         <h1 className="profile-header">Профиль</h1>
 
         <div className="profile-info">
-          <div className="photo-placeholder">Загрузить фото</div>
+          <div
+            className="photo-placeholder position-relative"
+            onClick={() => document.getElementById('photoInput')?.click()}
+          >
+            {photo ? (
+              <img src={photo} alt="Фото профиля" className="uploaded-photo img-fluid rounded" />
+            ) : (
+              <span className="text-muted text-center w-100 upload-label">Загрузить фото</span>
+            )}
+          </div>
+
+          <input
+            type="file"
+            id="photoInput"
+            accept="image/*"
+            style={{ display: 'none' }}
+            onChange={handlePhotoUpload}
+          />
+
           <div className="form-fields">
             <label>ФИО</label>
             <input
@@ -97,28 +161,28 @@ export default function UserAccount() {
               value={fullName}
               onChange={(e) => setFullName(e.target.value)}
               placeholder="Введите ФИО"
+              autoComplete="name"
               disabled={isSaved}
             />
-            {error && <div className="error-message">{error}</div>}
+            {error && <small className="hint-text error">Введите корректные данные</small>}
 
             <label>Пароль</label>
             <input
               type="password"
               className="form-control custom-select"
               value={position}
-
               onChange={(e) => {
                 const value = e.target.value;
                 setPosition(value);
-              
-                const passwordPattern = /^[A-Za-z0-9!@#$%^&*_]*$/;
-                if (!passwordPattern.test(value)) {
-                  setPasswordError('Допустимые символы: латинские буквы A–Z, a–z, цифры 0–9 и спецсимволы (!@#$%^&*_)');
+
+                if (!isPasswordValid(value)) {
+                  setPasswordError('Пароль должен быть не короче 8 символов и содержать только латинские буквы и цифры');
                 } else {
                   setPasswordError('');
                 }
               }}
               placeholder="Введите пароль"
+              autoComplete="current-password"
               disabled={isSaved}
             />
             {passwordError && <small className="hint-text error">{passwordError}</small>}
@@ -138,9 +202,7 @@ export default function UserAccount() {
               >
                 Зарегистрироваться
               </button>
-
             </div>
-
           </div>
         </div>
 
@@ -149,9 +211,32 @@ export default function UserAccount() {
         <div className="booking-card">
           <div className="booking-header">
             <strong className="col-event">Мероприятие</strong>
-            <strong className="col-booked">Забронировано</strong>
+            <strong className="col-booked d-flex align-items-center gap-2">
+              Забронировано
+              <img
+                src={calendarIcon}
+                alt="calendar"
+                width="26"
+                height="26"
+                style={{ cursor: 'pointer' }}
+                onClick={() => setShowCalendar(!showCalendar)}
+              />
+            </strong>
             <strong className="col-status">Статус</strong>
           </div>
+
+          {showCalendar && (
+            <div style={{ position: 'relative', marginTop: '10px' }}>
+              <Calendar
+                value={new Date('2025-11-16')}
+                tileClassName={({ date }) =>
+                  date.toDateString() === new Date('2025-11-16').toDateString()
+                    ? 'highlight'
+                    : null
+                }
+              />
+            </div>
+          )}
 
           <div className="booking-content">
             <div className="col-event event-details">
@@ -159,10 +244,6 @@ export default function UserAccount() {
             </div>
             <div className="col-booked centered-text">16.11.2025</div>
             <div className="col-status centered-text text-success">Подтверждено</div>
-          </div>
-
-          <div className="booking-actions">
-            <Link to="/events" className="btn-orange">Подробнее</Link>
           </div>
         </div>
 

@@ -76,12 +76,19 @@ export default function NewsList({
                     {item.date} — {item.author}
                   </Card.Subtitle>
                   {item.image && (
-                    <Image
-                      src={URL.createObjectURL(item.image)}
-                      thumbnail
-                      className="mb-2"
-                      style={{ maxWidth: 200 }}
-                    />
+                    <div style={{ width: "100%", marginBottom: "1rem" }}>
+                      <Image
+                        src={URL.createObjectURL(item.image)}
+                        thumbnail
+                        fluid
+                        style={{
+                          width: "100%",
+                          height: "200px",
+                          objectFit: "cover",
+                          borderRadius: "0.5rem",
+                        }}
+                      />
+                    </div>
                   )}
                   <Card.Text>{item.content}</Card.Text>
                   <Button
@@ -180,12 +187,19 @@ export default function NewsList({
             <Form.Group className="mb-3">
               <Form.Label>Изображение</Form.Label>
               {editing.image && (
-                <Image
-                  src={URL.createObjectURL(editing.image)}
-                  thumbnail
-                  className="mb-2"
-                  style={{ maxWidth: 200 }}
-                />
+                <div style={{ width: "100%", marginBottom: "1rem" }}>
+                  <Image
+                    src={URL.createObjectURL(editing.image)}
+                    thumbnail
+                    fluid
+                    style={{
+                      width: "100%",
+                      height: "200px",
+                      objectFit: "cover",
+                      borderRadius: "0.5rem",
+                    }}
+                  />
+                </div>
               )}
               <Form.Control type="file" accept="image/*" onChange={handleImage} />
             </Form.Group>

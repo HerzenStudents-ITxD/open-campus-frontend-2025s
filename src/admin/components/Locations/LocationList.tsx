@@ -6,13 +6,14 @@ export interface Location {
   name: string;
   capacity: number;
   description: string;
-  image?: File | null;
+  imageUrl: string;
+  newImageFile?: File;
 }
 
 interface LocationListProps {
   locations: Location[];
   onDelete: (id: number, reason: string) => void;
-  onEdit: (location: Location) => void;
+  onEdit: (location: Omit<Location, "imageUrl"> & { imageFile?: File }) => void;
 }
 
 export default function LocationList({ locations, onDelete, onEdit }: LocationListProps) {
@@ -22,12 +23,21 @@ export default function LocationList({ locations, onDelete, onEdit }: LocationLi
   const [toDeleteId, setToDeleteId] = useState<number | null>(null);
 
   const startEdit = (location: Location) => setEditing(location);
+
   const saveEdit = () => {
     if (editing) {
-      onEdit(editing);
+      const { newImageFile, imageUrl, ...rest } = editing;
+
+      const updatedLocation = {
+        ...rest,
+        imageFile: newImageFile, // может быть undefined, это нормально
+      };
+
+      onEdit(updatedLocation);
       setEditing(null);
     }
   };
+
 
   const handleField = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -35,8 +45,8 @@ export default function LocationList({ locations, onDelete, onEdit }: LocationLi
   };
 
   const handleImage = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files.length > 0 && editing) {
-      setEditing({ ...editing, image: e.target.files[0] });
+    if (e.target.files && e.target.files[0] && editing) {
+      setEditing({ ...editing, newImageFile: e.target.files[0] });
     }
   };
 
@@ -66,10 +76,10 @@ export default function LocationList({ locations, onDelete, onEdit }: LocationLi
               <Card.Subtitle className="mb-2 text-muted">
                 Вместимость: {loc.capacity}
               </Card.Subtitle>
-              {loc.image && (
+              {loc.imageUrl && (
                 <Image
-                  src={URL.createObjectURL(loc.image)}
-                  alt=""
+                  src={`http://localhost:5241${loc.imageUrl}`}
+                  alt="Локация"
                   thumbnail
                   className="mb-2"
                   style={{ maxWidth: 200 }}
@@ -87,7 +97,6 @@ export default function LocationList({ locations, onDelete, onEdit }: LocationLi
         ))
       )}
 
-      {/* Удаление */}
       <Modal show={showDelModal} onHide={() => setShowDelModal(false)}>
         <Modal.Header closeButton>
           <Modal.Title>Удалить локацию</Modal.Title>
@@ -114,7 +123,6 @@ export default function LocationList({ locations, onDelete, onEdit }: LocationLi
         </Modal.Footer>
       </Modal>
 
-      {/* Редактирование */}
       {editing && (
         <Card className="mt-4 p-3 shadow-sm">
           <h4 className="mb-3">Редактировать локацию</h4>
@@ -129,7 +137,7 @@ export default function LocationList({ locations, onDelete, onEdit }: LocationLi
             </Form.Group>
 
             <Form.Group className="mb-3">
-              <Form.Label>Вместительность</Form.Label>
+              <Form.Label>Вместимость</Form.Label>
               <Form.Control
                 type="number"
                 name="capacity"
@@ -150,9 +158,9 @@ export default function LocationList({ locations, onDelete, onEdit }: LocationLi
 
             <Form.Group className="mb-3">
               <Form.Label>Картинка</Form.Label>
-              {editing.image && (
+              {editing.imageUrl && (
                 <Image
-                  src={URL.createObjectURL(editing.image)}
+                  src={`http://localhost:5241${editing.imageUrl}`}
                   thumbnail
                   className="mb-2"
                   style={{ maxWidth: 200 }}

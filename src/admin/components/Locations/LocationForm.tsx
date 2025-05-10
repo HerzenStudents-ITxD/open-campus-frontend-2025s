@@ -8,8 +8,9 @@ export interface Location {
   imageUrl: string;
 }
 
+// Обновлённый тип props
 export interface LocationFormProps {
-  onSave: (location: Omit<Location, "id">) => void;
+  onSave: (location: Omit<Location, "id" | "imageUrl"> & { imageFile: File }) => void;
 }
 
 function LocationForm({ onSave }: LocationFormProps) {
@@ -19,31 +20,29 @@ function LocationForm({ onSave }: LocationFormProps) {
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [imageFile, setImageFile] = useState<File | null>(null);
 
-  // Обработчик загрузки файла
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files ? e.target.files[0] : null;
     if (file) {
       setImageFile(file);
       const reader = new FileReader();
       reader.onloadend = () => {
-        setImageUrl(reader.result as string); // Загружаем превью изображения
+        setImageUrl(reader.result as string);
       };
-      reader.readAsDataURL(file); // Преобразуем файл в строку Base64
+      reader.readAsDataURL(file);
     }
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!name || !imageFile) return; // Проверка на обязательные поля
+    if (!name || !imageFile) return;
 
     onSave({
       name,
       capacity,
       description,
-      imageUrl: imageUrl || "", // В случае ошибки или пустого файла
+      imageFile,
     });
 
-    // Очистка формы после сохранения
     setName("");
     setCapacity(0);
     setDescription("");
@@ -60,7 +59,6 @@ function LocationForm({ onSave }: LocationFormProps) {
           <input
             type="text"
             className="form-control"
-            placeholder="Введите название локации"
             value={name}
             onChange={(e) => setName(e.target.value)}
             required
@@ -72,7 +70,6 @@ function LocationForm({ onSave }: LocationFormProps) {
           <input
             type="number"
             className="form-control"
-            placeholder="Введите количество мест"
             value={capacity}
             onChange={(e) => setCapacity(Number(e.target.value))}
             required
@@ -84,7 +81,6 @@ function LocationForm({ onSave }: LocationFormProps) {
           <label className="form-label">Описание</label>
           <textarea
             className="form-control"
-            placeholder="Описание локации"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             rows={3}
@@ -92,7 +88,7 @@ function LocationForm({ onSave }: LocationFormProps) {
         </div>
 
         <div className="mb-3">
-          <label className="form-label">Выберите изображение</label>
+          <label className="form-label">Изображение</label>
           <input
             type="file"
             className="form-control"
@@ -102,7 +98,6 @@ function LocationForm({ onSave }: LocationFormProps) {
           />
         </div>
 
-        {/* Предпросмотр картинки */}
         {imageUrl && (
           <div className="mb-3">
             <img
@@ -122,5 +117,6 @@ function LocationForm({ onSave }: LocationFormProps) {
 }
 
 export default LocationForm;
+
 
   

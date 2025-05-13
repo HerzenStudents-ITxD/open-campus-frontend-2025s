@@ -157,7 +157,6 @@ export default function LocationList({ locations, onDelete, onEdit }: LocationLi
             </Form.Group>
 
             <Form.Group className="mb-3">
-              <Form.Label>Картинка</Form.Label>
               {editing.imageUrl && (
                 <Image
                   src={`http://localhost:5241${editing.imageUrl}`}

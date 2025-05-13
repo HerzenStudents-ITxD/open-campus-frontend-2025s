@@ -71,7 +71,7 @@ function AdminLocations() {
                 name: updatedLocation.name,
                 capacity: updatedLocation.capacity,
                 description: updatedLocation.description,
-                imageUrl: updatedLocation.imagePath // 💥 вот это важно
+                imageUrl: updatedLocation.imagePath
               }
             : loc
         )

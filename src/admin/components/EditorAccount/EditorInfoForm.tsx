@@ -11,34 +11,44 @@ import {
   Form,
   Image
 } from "react-bootstrap";
+import { fetchUser, updateUser } from "../../../api";
+
+const userId = "40E5D842-CAF4-4A20-9F19-EA0FAB876797";
 
 interface EditorInfo {
   name: string;
   email: string;
   bio: string;
   avatarUrl: string | null;
+  avatarFile?: File;
 }
 
 export default function EditorInfoForm() {
   const [info, setInfo] = useState<EditorInfo>({
-    name: "Иван Иванов",
-    email: "ivan.ivanov@example.com",
-    bio: "Редактор с опытом более 5 лет.",
+    name: "",
+    email: "",
+    bio: "",
     avatarUrl: null,
   });
-  const [loading, setLoading] = useState<boolean>(false);
-  const [saving, setSaving] = useState<boolean>(false);
-  const [error, setError] = useState<string>("");
-  const [success, setSuccess] = useState<string>("");
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
 
-  // эмулируем загрузку
   useEffect(() => {
-    setLoading(true);
-    const t = setTimeout(() => setLoading(false), 500);
-    return () => clearTimeout(t);
+    fetchUser(userId)
+      .then((data) =>
+        setInfo({
+          name: data.name,
+          email: data.email,
+          bio: data.bio,
+          avatarUrl: data.avatarUrl ? `http://localhost:5241${data.avatarUrl}` : null, // полный путь
+        })
+      )
+      .catch(() => setError("Ошибка загрузки данных"))
+      .finally(() => setLoading(false));
   }, []);
 
-  // Общий обработчик текстовых полей
   const handleChange = (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
@@ -46,13 +56,15 @@ export default function EditorInfoForm() {
     setInfo((prev) => ({ ...prev, [name]: value }));
   };
 
-  // Обработчик выбора аватара
   const handleAvatarChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files && e.target.files[0];
+    const file = e.target.files?.[0];
     if (file) {
-      // создаём временный URL для предпросмотра
       const url = URL.createObjectURL(file);
-      setInfo((prev) => ({ ...prev, avatarUrl: url }));
+      setInfo((prev) => ({
+        ...prev,
+        avatarUrl: url,
+        avatarFile: file,
+      }));
     }
   };
 
@@ -62,17 +74,21 @@ export default function EditorInfoForm() {
     setError("");
     setSuccess("");
 
-    // эмуляция сохранения
-    setTimeout(() => {
-      setSuccess("Данные успешно сохранены.");
-      setSaving(false);
-    }, 800);
+    updateUser(userId, {
+      name: info.name,
+      email: info.email,
+      bio: info.bio,
+      avatarFile: info.avatarFile,
+    })
+      .then(() => setSuccess("Данные успешно сохранены."))
+      .catch(() => setError("Ошибка при сохранении"))
+      .finally(() => setSaving(false));
   };
 
   if (loading) {
     return (
       <div className="text-center py-4">
-        <Spinner animation="border" role="status" />
+        <Spinner animation="border" />
       </div>
     );
   }
@@ -82,15 +98,11 @@ export default function EditorInfoForm() {
       {error && <Alert variant="danger">{error}</Alert>}
       {success && <Alert variant="success">{success}</Alert>}
 
-      {/* Avatar */}
       <Form.Group controlId="avatar" className="mb-4 text-center">
         <Form.Label>Аватар</Form.Label>
         <div className="mb-2">
           <Image
-            src={
-              info.avatarUrl ||
-              "https://via.placeholder.com/100?text=Avatar"
-            }
+            src={info.avatarUrl || "https://via.placeholder.com/100?text=Avatar"}
             roundedCircle
             width={100}
             height={100}
@@ -104,16 +116,12 @@ export default function EditorInfoForm() {
         />
       </Form.Group>
 
-      <Form.Group className="mb-3" controlId="editorName">
+      <Form.Group className="mb-3">
         <Form.Label>Имя</Form.Label>
-        <Form.Control
-          name="name"
-          value={info.name}
-          onChange={handleChange}
-        />
+        <Form.Control name="name" value={info.name} onChange={handleChange} />
       </Form.Group>
 
-      <Form.Group className="mb-3" controlId="editorEmail">
+      <Form.Group className="mb-3">
         <Form.Label>Электронная почта</Form.Label>
         <Form.Control
           type="email"
@@ -123,7 +131,7 @@ export default function EditorInfoForm() {
         />
       </Form.Group>
 
-      <Form.Group className="mb-3" controlId="editorBio">
+      <Form.Group className="mb-3">
         <Form.Label>О себе</Form.Label>
         <Form.Control
           as="textarea"

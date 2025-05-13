@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Nav } from "react-bootstrap";
-import logo from "D:/open-campus-frontend-2025s/src/assets/logo_admin.png";
-import smallLogo from "D:/open-campus-frontend-2025s/src/assets/logo_small_admin.png";
+import logo from "../../../assets/logo_admin.png";
+import smallLogo from "../../../assets/logo_small_admin.png";
 import { Home, Calendar, MapPin, Info, User, ArrowLeftCircle, ArrowLeft } from "react-feather";
 
 function Sidebar() {

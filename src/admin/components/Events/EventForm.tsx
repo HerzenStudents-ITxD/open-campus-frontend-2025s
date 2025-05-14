@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Form, Button } from "react-bootstrap";
 
 export interface EventData {
-  id?: number;
+  id: number;
   title: string;
   description: string;
   date: string;
@@ -19,6 +19,7 @@ interface EventFormProps {
 
 export default function EventForm({ onSubmit }: EventFormProps) {
   const [event, setEvent] = useState<EventData>({
+    id: 0,
     title: "",
     description: "",
     date: "",
@@ -42,8 +43,9 @@ export default function EventForm({ onSubmit }: EventFormProps) {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSubmit({ ...event, id: Date.now() }); // Генерируем id для теста
+    onSubmit({ ...event, id: Date.now() });
     setEvent({
+      id: 0,
       title: "",
       description: "",
       date: "",

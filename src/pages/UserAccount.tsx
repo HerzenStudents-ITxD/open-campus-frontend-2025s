@@ -85,18 +85,6 @@ export default function UserAccount() {
     setIsSaved(true); 
   };
 
-  const handleSave = () => {
-    if (!validateFullName(fullName)) {
-      setError('Введите корректные данные');
-      return;
-    }
-
-    localStorage.setItem("fullName", fullName);
-    localStorage.setItem("position", position);
-    setIsSaved(true);
-    setError('');
-  };
-
   const handleLogout = () => {
     localStorage.removeItem("fullName");
     localStorage.removeItem("position");

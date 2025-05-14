@@ -16,7 +16,8 @@ export default function UserAccount() {
   const [error, setError] = useState('');
   const [passwordError, setPasswordError] = useState('');
   const [buttonClicked, setButtonClicked] = useState(false);
-  const [showCalendar, setShowCalendar] = useState(false);
+  const [showBookingCalendar, setShowBookingCalendar] = useState(false);
+  const [showTicketCalendar, setShowTicketCalendar] = useState(false);
   const [photo, setPhoto] = useState<string | null>(null);
   const [showPasswordModal, setShowPasswordModal] = useState(false);
 
@@ -106,16 +107,6 @@ export default function UserAccount() {
           <img src={logoImage} alt="Логотип" className="logo-img" />
         </div>
         <Link to="/" className="btn-orange">← На главную</Link>
-
-        <button className="password" onClick={() => setShowPasswordModal(true)}>
-          Изменить пароль
-        </button>
-
-        {showPasswordModal && (
-        <ChangePasswordModal onClose={() => setShowPasswordModal(false)} />
-      )}
-
-        <a href="#" onClick={handleLogout} className="logout-link">Выйти из аккаунта</a>
       </div>
 
       <div className="main-content">
@@ -194,52 +185,136 @@ export default function UserAccount() {
           </div>
         </div>
 
-        <h2 className="section-title">Мои брони</h2>
 
-        <div className="booking-card">
-          <div className="booking-header">
-            <strong className="col-event">Мероприятие</strong>
-            <strong className="col-booked d-flex align-items-center gap-2">
-              Забронировано
-              <img
-                src={calendarIcon}
-                alt="calendar"
-                width="26"
-                height="26"
-                style={{ cursor: 'pointer' }}
-                onClick={() => setShowCalendar(!showCalendar)}
-              />
-            </strong>
-            <strong className="col-status">Статус</strong>
-          </div>
+        {/* БИЛЕТЫ */}
+        <h2 className="section-title">Мои билеты</h2>
+                <div className="booking-card">
+                  <div className="booking-header">
+                    <strong className="col-event">Мероприятие</strong>
+                    <strong className="col-booked d-flex align-items-center gap-2">
+                      Забронировано
+                      <img
+                        src={calendarIcon}
+                        alt="calendar"
+                        width="26"
+                        height="26"
+                        style={{ cursor: 'pointer' }}
+                        onClick={() => setShowTicketCalendar(!showTicketCalendar)}
+                      />
+                    </strong>
+                    <strong className="col-status">Статус</strong>
+                  </div>
 
-          {showCalendar && (
-            <div style={{ position: 'relative', marginTop: '10px' }}>
-              <Calendar
-                value={new Date('2025-11-16')}
-                tileClassName={({ date }) =>
-                  date.toDateString() === new Date('2025-11-16').toDateString()
-                    ? 'highlight'
-                    : null
-                }
-              />
-            </div>
-          )}
+                  {showTicketCalendar && (
+                    <div style={{ position: 'relative', marginTop: '10px' }}>
+                      <Calendar
+                        value={new Date('2025-11-16')}
+                        tileClassName={({ date }) =>
+                          date.toDateString() === new Date('2025-11-16').toDateString()
+                            ? 'highlight'
+                            : null
+                        }
+                      />
+                    </div>
+                  )}
 
-          <div className="booking-content">
-            <div className="col-event event-details">
-              Цикл лекций "Искусство XX века". Блок первый. Искусство авангарда. Лекция первая. Ранний европейский авангард
-            </div>
-            <div className="col-booked centered-text">16.11.2025</div>
-            <div className="col-status centered-text text-success">Подтверждено</div>
-          </div>
-        </div>
+                  <div className="booking-content">
+                    <div className="col-event event-details">
+                      Цикл лекций "Искусство XX века". Блок первый. Искусство авангарда. Лекция первая. Ранний европейский авангард
+                      <div className="location-info">
+                        <strong>Локация:</strong>{' '}
+                        <Link to="/locations" className="location-link">открытая гостиная</Link>
+                      </div>
+                    </div>
+                    <div className="col-booked centered-text">16.11.2025</div>
+                    <div className="col-status centered-text text-success">Подтверждено</div>
+                  </div>
+                </div>
 
+                <div className="more-events">
+                  <span>Посетите больше мероприятий!</span>
+                  <Link to="/events" className="btn-dark-custom">Мероприятия</Link>
+                </div>
+
+
+
+        {/* БРОНИ */}
+
+        <h2 className="section-title" style={{ marginTop: '40px' }}>Мои брони</h2>
+                <div className="booking-card">
+                  <div className="booking-header">
+                    <strong className="col-events">Помещение</strong>
+                    <strong className="col-booked d-flex align-items-center gap-2">
+                      Забронировано
+                      <img
+                        src={calendarIcon}
+                        alt="calendar"
+                        width="26"
+                        height="26"
+                        style={{ cursor: 'pointer' }}
+                        onClick={() => setShowBookingCalendar(!showBookingCalendar)}
+                      />
+                    </strong>
+                    <strong className="col-status">Длительность</strong>
+                    <strong className="col-status">Статус</strong>
+
+                  </div>
+
+                  {showBookingCalendar && (
+                    <div style={{ position: 'relative', marginTop: '10px' }}>
+                      <Calendar
+                        value={new Date('2025-11-13')}
+                        tileClassName={({ date }) =>
+                          date.toDateString() === new Date('2025-11-13').toDateString()
+                            ? 'highlight'
+                            : null
+                        }
+                      />
+                    </div>
+                  )}
+
+                  <div className="booking-content">
+                    <div className="event-details">
+                      <Link to="/locations" className="location-link">Большой коворкинг</Link>
+                    </div>
+
+                    <div className="col-booked centered-text">13.11.2025; 14:30</div>
+                    <div className="col-status centered-text">1,5 часа</div>
+                    <div className="col-status centered-text text-success">Подтверждено</div>
+                  </div>
+                </div>
+
+                <div className="more-events">
+                  <span>Забронируйте помещение!</span>
+                  <Link to="/locations" className="btn-dark-custom">Локации</Link>
+                </div>
+
+
+
+
+
+
+
+
+        <h2 className="section-title" style={{ marginTop: '40px' }}>История</h2>
         <div className="more-events">
-          <span>Посетите больше мероприятий!</span>
-          <Link to="/events" className="btn-dark-custom">Мероприятия</Link>
+          <span>Пока пусто!</span>
         </div>
+
       </div>
+
+      <div className="fixed-actions">
+        <button className="password" onClick={() => setShowPasswordModal(true)}>
+          Изменить пароль
+        </button>
+
+        {showPasswordModal && (
+          <ChangePasswordModal onClose={() => setShowPasswordModal(false)} />
+        )}
+
+        <a href="#" onClick={handleLogout} className="logout-link">Выйти из аккаунта</a>
+      </div>
+
     </div>
   );
 }

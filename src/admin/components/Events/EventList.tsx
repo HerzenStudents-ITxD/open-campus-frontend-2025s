@@ -1,44 +1,39 @@
 import React, { useState } from "react";
 import { Card, Button, Modal, Form, Image } from "react-bootstrap";
-import { Event } from "../../../api";
-import { deleteEvent, updateEvent } from "../../../api";
+import { EventData } from "./EventForm";
 
 interface EventListProps {
-  events: Event[];
-  onEventUpdated: (updated: Event) => void;
-  onEventDeleted: (id: number) => void;
+  events: EventData[];
+  onDelete: (id: number, reason: string) => void;
+  onUpdate: (event: EventData) => void;
 }
 
-export default function EventList({ events, onEventUpdated, onEventDeleted }: EventListProps) {
-  const [editingEvent, setEditingEvent] = useState<(Event & { image?: File }) | null>(null);
+export default function EventList({ events, onDelete, onUpdate }: EventListProps) {
+  const [editingEvent, setEditingEvent] = useState<EventData | null>(null);
   const [deleteReason, setDeleteReason] = useState("");
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [eventToDelete, setEventToDelete] = useState<number | null>(null);
 
-  const handleEdit = (event: Event) => {
+  const handleEdit = (event: EventData) => {
     setEditingEvent(event);
   };
 
-  const handleSave = async () => {
+  const handleSave = () => {
     if (editingEvent) {
-      try {
-        const updated = await updateEvent(editingEvent);
-        onEventUpdated(updated);
-        setEditingEvent(null);
-      } catch (err: any) {
-        alert(err.message || "Ошибка при обновлении");
-      }
+      onUpdate(editingEvent);
+      setEditingEvent(null);
     }
   };
 
   const handleFieldChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
-    setEditingEvent((prev) => prev ? { ...prev, [name]: value } : null);
+    setEditingEvent(prev => prev ? { ...prev, [name]: value } : null);
   };
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file && editingEvent) {
+    const target = e.target as HTMLInputElement;
+    if (target.files && target.files[0] && editingEvent) {
+      const file = target.files[0];
       setEditingEvent({ ...editingEvent, image: file });
     }
   };
@@ -49,15 +44,10 @@ export default function EventList({ events, onEventUpdated, onEventDeleted }: Ev
     setShowDeleteModal(true);
   };
 
-  const confirmDelete = async () => {
+  const confirmDelete = () => {
     if (eventToDelete !== null) {
-      try {
-        await deleteEvent(eventToDelete, deleteReason);
-        onEventDeleted(eventToDelete);
-        setShowDeleteModal(false);
-      } catch (err: any) {
-        alert(err.message || "Ошибка при удалении");
-      }
+      onDelete(eventToDelete, deleteReason);
+      setShowDeleteModal(false);
     }
   };
 
@@ -68,16 +58,16 @@ export default function EventList({ events, onEventUpdated, onEventDeleted }: Ev
       {events.length === 0 ? (
         <p>Пока нет мероприятий.</p>
       ) : (
-        events.map((event) => (
+        events.map(event => (
           <Card className="mb-3" key={event.id}>
             <Card.Body>
               <Card.Title>{event.title}</Card.Title>
               <Card.Subtitle className="mb-2 text-muted">
                 {event.date} — {event.location}
               </Card.Subtitle>
-              {event.imageUrl && (
+              {event.image && (
                 <Image
-                  src={event.imageUrl}
+                  src={URL.createObjectURL(event.image)}
                   alt=""
                   thumbnail
                   className="mb-2"
@@ -93,7 +83,7 @@ export default function EventList({ events, onEventUpdated, onEventDeleted }: Ev
                 <Button variant="primary" size="sm" className="me-2" onClick={() => handleEdit(event)}>
                   Редактировать
                 </Button>
-                <Button variant="danger" size="sm" onClick={() => handleDelete(event.id)}>
+                <Button variant="danger" size="sm" onClick={() => handleDelete(event.id!)}>
                   Удалить
                 </Button>
               </div>
@@ -102,7 +92,7 @@ export default function EventList({ events, onEventUpdated, onEventDeleted }: Ev
         ))
       )}
 
-      {/* Удаление */}
+      {/* Модалка удаления */}
       <Modal show={showDeleteModal} onHide={() => setShowDeleteModal(false)}>
         <Modal.Header closeButton>
           <Modal.Title>Удалить мероприятие</Modal.Title>
@@ -114,7 +104,7 @@ export default function EventList({ events, onEventUpdated, onEventDeleted }: Ev
               as="textarea"
               rows={3}
               value={deleteReason}
-              onChange={(e) => setDeleteReason(e.target.value)}
+              onChange={e => setDeleteReason(e.target.value)}
               required
             />
           </Form.Group>
@@ -129,7 +119,7 @@ export default function EventList({ events, onEventUpdated, onEventDeleted }: Ev
         </Modal.Footer>
       </Modal>
 
-      {/* Редактирование */}
+      {/* Форма редактирования */}
       {editingEvent && (
         <Card className="mt-4 p-3 shadow-sm">
           <h4 className="mb-3">Редактировать мероприятие</h4>
@@ -183,15 +173,19 @@ export default function EventList({ events, onEventUpdated, onEventDeleted }: Ev
             </Form.Group>
 
             <Form.Group className="mb-3">
-              {editingEvent.imageUrl && (
+              {editingEvent.image && (
                 <Image
-                  src={editingEvent.imageUrl}
+                  src={URL.createObjectURL(editingEvent.image)}
                   thumbnail
                   className="mb-2"
                   style={{ maxWidth: 200 }}
                 />
               )}
-              <Form.Control type="file" accept="image/*" onChange={handleImageChange} />
+              <Form.Control
+                type="file"
+                accept="image/*"
+                onChange={handleImageChange}
+              />
             </Form.Group>
 
             <Button variant="success" onClick={handleSave}>
@@ -203,4 +197,3 @@ export default function EventList({ events, onEventUpdated, onEventDeleted }: Ev
     </div>
   );
 }
-

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from "react";
 import '../styles/ChangePasswordModal.css';
 
 interface Props {
@@ -10,7 +10,7 @@ export default function ChangePasswordModal({ onClose }: Props) {
   const [newPassword, setNewPassword] = useState('');
   const [repeatPassword, setRepeatPassword] = useState('');
   const [error, setError] = useState('');
-  const [isClosing, setIsClosing] = useState(false); // ✅ добавлено
+  const [isClosing, setIsClosing] = useState(false);
 
   const handleSave = () => {
     const storedPassword = localStorage.getItem("position");

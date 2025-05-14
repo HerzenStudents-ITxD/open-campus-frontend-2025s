@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Card, Row, Col, Button } from "react-bootstrap";
 
 interface Review {

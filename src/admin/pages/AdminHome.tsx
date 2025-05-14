@@ -1,7 +1,6 @@
 import NewsForm, { NewsData } from "../components/Home/NewsForm";
 import NewsList from "../components/Home/NewsList";
 import { useState } from "react";
-import { Container } from "react-bootstrap";
 
 export default function AdminHome() {
   const [newsItems, setNewsItems] = useState<NewsData[]>([]);

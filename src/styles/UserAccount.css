@@ -213,7 +213,7 @@ button.password:hover {
   border-radius: 10px;
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
   padding: 1.5rem;
-  margin-bottom: 30px;
+  margin-bottom: 15px;
   display: flex;
   flex-direction: column;
   gap: 1rem;
@@ -221,6 +221,7 @@ button.password:hover {
 
 .booking-header {
   display: flex;
+  justify-content: space-between;
   font-weight: 500;
   border-bottom: 1px solid #ccc;
   padding-bottom: 0.5rem;
@@ -229,15 +230,44 @@ button.password:hover {
 .booking-content {
   display: flex;
   align-items: center;
+  
 }
+
+.event-details {
+  word-break: break-word;
+  margin-top: 10px; /* отступ сверху для текста лекции */
+  line-height: 1.5;
+}
+
+.location-info {
+  margin-top: 10px; /* чуть ниже от текста */
+  font-size: 0.95rem;
+}
+
+.location-link {
+  color: #1D213C;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.location-link:hover {
+  color: #ff4d1f;
+}
+
 
 .col-event {
   width: 60%;
   padding-right: 1rem;
 }
 
+.col-events {
+  width: 20%;
+  padding-right: 1rem;
+}
+
 .col-booked, .col-status {
   width: 20%;
+  margin-bottom: 7px;
   text-align: center;
 }
 
@@ -246,6 +276,7 @@ button.password:hover {
   justify-content: center;
   align-items: center;
   text-align: center;
+  margin-left: 100px;
 }
 
 .event-details {
@@ -300,3 +331,17 @@ button.password:hover {
   margin-top: 2px;
 }
 
+.fixed-actions {
+  position: fixed;
+  bottom: 20px;
+  left: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 0px;
+  z-index: 1000;
+}
+
+.fixed-actions .password,
+.fixed-actions .logout-link {
+  width: 180px;
+}

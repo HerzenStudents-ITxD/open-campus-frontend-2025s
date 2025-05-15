@@ -47,11 +47,14 @@ body {
   text-align: center;
   transition: background-color 0.2s ease;
   text-decoration: none;
+  font-family: Literal, sans-serif;
+  z-index: 9999;
 }
 
 .btn-orange:hover {
   background-color: #d13e1a;
-  color: white
+  color: white;
+  z-index: 9999;
 }
 
 .btn-dark-custom {

@@ -55,7 +55,7 @@ export default function UserAccount() {
   }, []);
 
   const validateFullName = (name: string) => {
-    const namePattern = /^[A-ZА-ЯЁ][a-zа-яё]+ [A-ZА-ЯЁ][a-zа-яё]+ [A-ZА-ЯЁ][a-zа-яё]+$/;
+    const namePattern = /^[А-ЯЁ][а-яё]+ [А-ЯЁ][а-яё]+ [А-ЯЁ][а-яё]+$/;
     return namePattern.test(name);
   };
 

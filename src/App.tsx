@@ -3,7 +3,7 @@ import AppRoutes from "./AppRoutes";
 
 function App() {
   return (
-    <Router>
+    <Router basename="/open-campus">
       <AppRoutes />
     </Router>
   );

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import '../styles/ChangePasswordModal.css';
+import axios from 'axios';
 
 interface Props {
   onClose: () => void;
@@ -12,24 +13,24 @@ export default function ChangePasswordModal({ onClose }: Props) {
   const [error, setError] = useState('');
   const [isClosing, setIsClosing] = useState(false);
 
-  const handleSave = () => {
-    const storedPassword = localStorage.getItem("position");
 
-    // Проверка на пустые поля
+
+
+
+
+
+
+  const handleSave = async () => {
+    setError('');
+
     if (!oldPassword || !newPassword || !repeatPassword) {
-        setError("Заполните все поля");
-        return;
-    }
-
-    if (oldPassword !== storedPassword) {
-      setError("Старый пароль неверный");
+      setError("Заполните все поля");
       return;
     }
 
-    // Новый пароль не должен быть таким же, как старый
     if (newPassword === oldPassword) {
-        setError("Новый пароль не должен совпадать со старым");
-        return;
+      setError("Новый пароль не должен совпадать со старым");
+      return;
     }
 
     if (newPassword.length < 6) {
@@ -39,21 +40,49 @@ export default function ChangePasswordModal({ onClose }: Props) {
 
     const strongPasswordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
     if (!strongPasswordRegex.test(newPassword)) {
-        setError("Пароль должен содержать минимум 8 символов, включая заглавную, строчную буквы и цифру");
-        return;
+      setError("Пароль должен содержать минимум 8 символов, включая заглавную, строчную буквы и цифру");
+      return;
     }
 
     if (newPassword.trim() !== repeatPassword.trim()) {
-        setError("Пароли не совпадают");
-        return;
+      setError("Пароли не совпадают");
+      return;
     }
-      
-    localStorage.setItem("position", newPassword);
-    setError('');
-    alert("Пароль успешно изменён");
-    startClosing(); // ✅ с анимацией
+
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        setError("Вы не авторизованы");
+        return;
+      }
+
+      await axios.post(`https://localhost:7299/api/User/change-password/1`, {
+        oldPassword,
+        newPassword
+      }, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+
+      alert("Пароль успешно изменён");
+      startClosing();
+    } catch (err) {
+      setError("Старый пароль неверный или сервер недоступен");
+    }
   };
 
+
+
+
+
+
+
+
+
+
+  
   const startClosing = () => {
     setIsClosing(true);
     setTimeout(() => {

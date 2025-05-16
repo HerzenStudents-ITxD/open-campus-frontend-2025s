@@ -6,6 +6,7 @@ import calendarIcon from '../assets/calendar-icon.png';
 import Calendar from 'react-calendar';
 import '../styles/Calendar.css';
 import ChangePasswordModal from './ChangePasswordModal';
+import axios from 'axios';
 
 export default function UserAccount() {
   const navigate = useNavigate();
@@ -26,77 +27,185 @@ export default function UserAccount() {
     return pattern.test(password.trim());
   };
 
-  const handlePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const validateFullName = (name: string) => {
+    const namePattern = /^[А-ЯЁ][а-яё-]+ [А-ЯЁ][а-яё-]+ [А-ЯЁ][а-яё-]+$/i;
+    return namePattern.test(name.trim());
+  };
+
+
+
+
+
+
+//с этого места заменяла сякие функции чтобы к бэкэнду поделючалось
+
+  const handlePhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) {
+    if (!file) return;
+
+    const token = localStorage.getItem('token');
+    if (!token) {
+      setError('Пожалуйста, войдите в аккаунт для загрузки фото');
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('Name', fullName);
+    formData.append('Avatar', file);
+
+    try {
+      await axios.put('https://localhost:7299/api/User/1', formData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+
+      // Обновляем фото в интерфейсе можно сказать локально
       const reader = new FileReader();
       reader.onloadend = () => {
         const result = reader.result as string;
-        setPhoto(result); 
-        localStorage.setItem("photo", result); 
+        setPhoto(result);
       };
       reader.readAsDataURL(file);
+
+      setError('');
+    } catch (error) {
+      setError('Ошибка при загрузке фото');
     }
   };
-  
-  useEffect(() => {
-    const storedFullName = localStorage.getItem("fullName");
-    const storedPosition = localStorage.getItem("position");
-    const storedPhoto = localStorage.getItem("photo");
 
-    if (storedFullName && storedPosition) {
-      setFullName(storedFullName);
-      setPosition(storedPosition);
-      setIsSaved(true);
-    }
-    if (storedPhoto) {
-      setPhoto(storedPhoto);
-    }
+
+
+
+
+
+
+  useEffect(() => {
+    const getProfile = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        if (!token) return;
+
+        const response = await axios.get('https://localhost:7299/api/User/1', {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        setFullName(response.data.name); // в API поле называется Name
+        setPosition(''); // пароль не возвращается с сервера
+        if (response.data.avatar) setPhoto(response.data.avatar);
+        setIsSaved(true);
+      } catch (error) {
+        console.error('Ошибка загрузки профиля', error);
+      }
+    };
+
+    getProfile();
   }, []);
 
-  const validateFullName = (name: string) => {
-    const namePattern = /^[А-ЯЁ][а-яё]+ [А-ЯЁ][а-яё]+ [А-ЯЁ][а-яё]+$/;
-    return namePattern.test(name);
-  };
 
-  const handleLogin = () => {
+
+
+
+
+
+
+  const handleLogin = async () => {
     if (!validateFullName(fullName) || !isPasswordValid(position)) {
       setError('Введите корректные данные');
+      console.log('Ошибка валидации:', { fullName, position });
       return;
     }
-    localStorage.setItem("fullName", fullName);
-    localStorage.setItem("position", position);
-    setIsSaved(true);
-    setError('');
-    setButtonClicked(true);
+
+    try {
+      console.log('Отправка запроса на логин с данными:', { fullName, position });
+
+      const response = await axios.post('https://localhost:7299/api/User/login', {
+        fullName,
+        password: position,
+      });
+
+      console.log('Ответ сервера:', response.data);
+
+      localStorage.setItem('token', response.data.token);
+      setError('');
+      setButtonClicked(true);
+
+      // Загружаем профиль сразу после логина
+      const profileResponse = await axios.get('https://localhost:7299/api/User/1', {
+        headers: { Authorization: `Bearer ${response.data.token}` },
+      });
+
+      console.log('Данные профиля:', profileResponse.data);
+
+      setFullName(profileResponse.data.name);
+      setPosition('');
+      if (profileResponse.data.avatar) setPhoto(profileResponse.data.avatar);
+      setIsSaved(true);
+    } catch (error) {
+      console.error('Ошибка логина или запроса профиля:', error);
+      setError('Неверные данные или ошибка сервера');
+    }
   };
+
   
-  const handleRegister = () => {
+
+
+
+
+
+
+  const handleRegister = async () => {
     if (!validateFullName(fullName) || !isPasswordValid(position)) {
       setError('Введите корректные данные');
+      console.log('Ошибка валидации регистрации:', { fullName, position });
       return;
     }
-    
-    localStorage.setItem("fullName", fullName);
-    localStorage.setItem("position", position);
 
-    alert('Регистрация успешна');
-    setButtonClicked(true);
-    setIsSaved(true); 
+    try {
+      console.log('Отправка запроса на регистрацию с данными:', { fullName, position });
+
+      const response = await axios.post('https://localhost:7299/api/User', {
+        fullName,
+        password: position,
+      });
+
+      console.log('Ответ сервера при регистрации:', response.data);
+
+      alert('Регистрация успешна');
+      setButtonClicked(true);
+      setIsSaved(true);
+      setError('');
+    } catch (error) {
+      console.error('Ошибка при регистрации:', error);
+      setError('Ошибка при регистрации');
+    }
   };
+
+
+
+
+
+
 
   const handleLogout = () => {
-    localStorage.removeItem("fullName");
-    localStorage.removeItem("position");
-    localStorage.removeItem("photo");
-
-    setPhoto(null);       
+    localStorage.removeItem('token');
+    setPhoto(null);
     setFullName('');
     setPosition('');
     setIsSaved(false);
     setButtonClicked(false);
-    navigate("/");
+    navigate('/');
   };
+
+
+
+
+
+
+//а тут заменять прекратила
 
   const isFormComplete = fullName.trim() !== '' && isPasswordValid(position);
 

@@ -4,14 +4,28 @@ import LocationForm from "../components/Locations/LocationForm";
 import LocationList, { Location } from "../components/Locations/LocationList";
 import BookingOverview from "../components/Locations/BookingOverview";
 
+interface Booking {
+  id: string;
+  date: string;
+  location: string;
+  user: string;
+}
+
 function AdminLocations() {
   const [locations, setLocations] = useState<Location[]>([]);
-  const apiBase = "http://localhost:5241/api/location";
+  const [bookings, setBookings] = useState<Booking[]>([]);
+
+  const locationApi = "http://localhost:5241/api/location";
+  const bookingApi = "http://localhost:5241/api/booking";
 
   useEffect(() => {
-    axios.get(apiBase)
-      .then((res: { data: Location[] }) => setLocations(res.data))
-      .catch((err: any) => console.error("Ошибка при загрузке локаций:", err));
+    axios.get(locationApi)
+      .then(res => setLocations(res.data))
+      .catch(err => console.error("Ошибка при загрузке локаций:", err));
+
+    axios.get(bookingApi)
+      .then(res => setBookings(res.data))
+      .catch(err => console.error("Ошибка при загрузке бронирований:", err));
   }, []);
 
   const handleSaveLocation = async (
@@ -24,7 +38,7 @@ function AdminLocations() {
     formData.append("Image", location.imageFile);
 
     try {
-      const res = await axios.post(apiBase, formData, {
+      const res = await axios.post(locationApi, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
@@ -40,7 +54,7 @@ function AdminLocations() {
           imageUrl: newLocation.imagePath,
         },
       ]);
-    } catch (err: any) {
+    } catch (err) {
       console.error("Ошибка при сохранении локации:", err);
     }
   };
@@ -57,7 +71,7 @@ function AdminLocations() {
     }
 
     try {
-      const res = await axios.put(`${apiBase}/${updated.id}`, formData, {
+      const res = await axios.put(`${locationApi}/${updated.id}`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
@@ -76,18 +90,16 @@ function AdminLocations() {
             : loc
         )
       );
-
-    } catch (err: any) {
+    } catch (err) {
       console.error("Ошибка при обновлении локации:", err);
     }
   };
 
-
   const handleDeleteLocation = async (id: number) => {
     try {
-      await axios.delete(`${apiBase}/${id}`);
+      await axios.delete(`${locationApi}/${id}`);
       setLocations(prev => prev.filter(loc => loc.id !== id));
-    } catch (err: any) {
+    } catch (err) {
       console.error("Ошибка при удалении локации:", err);
     }
   };
@@ -105,16 +117,9 @@ function AdminLocations() {
         onEdit={handleEditLocation}
       />
 
-      <BookingOverview 
-        bookings={[
-          { id: 1, eventName: "Концерт", date: "2025-06-01", location: "Большой зал", user: "Такой То" },
-          { id: 2, eventName: "Лекция", date: "2025-06-03", location: "Малая аудитория", user: "Сякой То" }
-        ]}
-      />
+      <BookingOverview bookings={bookings} />
     </div>
   );
 }
 
 export default AdminLocations;
-
-

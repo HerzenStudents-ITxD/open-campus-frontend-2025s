@@ -54,7 +54,7 @@ export default function UserAccount() {
     formData.append('Avatar', file);
 
     try {
-      await axios.put('https://localhost:7299/api/User/1', formData, {
+      await axios.put('http://localhost:5241/api/User/1', formData, {
         headers: {
           Authorization: `Bearer ${token}`,
           'Content-Type': 'multipart/form-data',
@@ -87,7 +87,7 @@ export default function UserAccount() {
         const token = localStorage.getItem('token');
         if (!token) return;
 
-        const response = await axios.get('https://localhost:7299/api/User/1', {
+        const response = await axios.get('http://localhost:5241/api/User/1', {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -122,7 +122,7 @@ export default function UserAccount() {
     try {
       console.log('Отправка запроса на логин с данными:', { fullName, position });
 
-      const response = await axios.post('https://localhost:7299/api/User/login', {
+      const response = await axios.post('http://localhost:5241/api/User/login', {
         fullName,
         password: position,
       });
@@ -134,7 +134,7 @@ export default function UserAccount() {
       setButtonClicked(true);
 
       // Загружаем профиль сразу после логина
-      const profileResponse = await axios.get('https://localhost:7299/api/User/1', {
+      const profileResponse = await axios.get('http://localhost:5241/api/User/1', {
         headers: { Authorization: `Bearer ${response.data.token}` },
       });
 
@@ -167,7 +167,7 @@ export default function UserAccount() {
     try {
       console.log('Отправка запроса на регистрацию с данными:', { fullName, position });
 
-      const response = await axios.post('https://localhost:7299/api/User', {
+      const response = await axios.post('http://localhost:5241/api/User', {
         fullName,
         password: position,
       });

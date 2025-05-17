@@ -2,12 +2,14 @@ import React, { useState } from "react";
 import { Form, Button } from "react-bootstrap";
 
 export interface NewsData {
-  id?: number;
+  id?: string;
   title: string;
   content: string;
-  date: string;      // дата публикации
-  author: string;    // кто добавил
-  image?: File | null;
+  author: string;
+  publishedAt: string;
+  isPublished: boolean;
+  imageFile?: File;
+  imagePath?: string;
 }
 
 interface NewsFormProps {
@@ -18,9 +20,10 @@ export default function NewsForm({ onSubmit }: NewsFormProps) {
   const [news, setNews] = useState<NewsData>({
     title: "",
     content: "",
-    date: new Date().toISOString().slice(0, 10),
     author: "",
-    image: null,
+    publishedAt: new Date().toISOString().slice(0, 10),
+    isPublished: true,
+    imageFile: undefined,
   });
 
   const handleChange = (
@@ -30,22 +33,30 @@ export default function NewsForm({ onSubmit }: NewsFormProps) {
     setNews((prev) => ({ ...prev, [name]: value }));
   };
 
+  const handleStatusChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setNews((prev) => ({
+      ...prev,
+      isPublished: e.target.value === "published",
+    }));
+  };
+
   const handleImage = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const target = e.target as HTMLInputElement;
-    if (target.files && target.files.length > 0) {
-      setNews((prev) => ({ ...prev, image: target.files![0] }));
+    const file = e.target.files?.[0];
+    if (file) {
+      setNews((prev) => ({ ...prev, imageFile: file }));
     }
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSubmit({ ...news, id: Date.now() });
+    onSubmit(news);
     setNews({
       title: "",
       content: "",
-      date: new Date().toISOString().slice(0, 10),
       author: "",
-      image: null,
+      publishedAt: new Date().toISOString().slice(0, 10),
+      isPublished: true,
+      imageFile: undefined,
     });
   };
 
@@ -79,8 +90,8 @@ export default function NewsForm({ onSubmit }: NewsFormProps) {
           <Form.Label>Дата публикации</Form.Label>
           <Form.Control
             type="date"
-            name="date"
-            value={news.date}
+            name="publishedAt"
+            value={news.publishedAt}
             onChange={handleChange}
             required
           />
@@ -96,8 +107,19 @@ export default function NewsForm({ onSubmit }: NewsFormProps) {
           />
         </Form.Group>
 
+        <Form.Group className="mb-3" controlId="newsStatus">
+          <Form.Label>Статус публикации</Form.Label>
+          <Form.Select
+            value={news.isPublished ? "published" : "draft"}
+            onChange={handleStatusChange}
+          >
+            <option value="published">Будет опубликовано</option>
+            <option value="draft">Черновик</option>
+          </Form.Select>
+        </Form.Group>
+
         <Form.Group className="mb-3" controlId="newsImage">
-          <Form.Label>Изображение новости</Form.Label>
+          <Form.Label>Изображение</Form.Label>
           <Form.Control type="file" accept="image/*" onChange={handleImage} />
         </Form.Group>
 
@@ -106,3 +128,5 @@ export default function NewsForm({ onSubmit }: NewsFormProps) {
     </div>
   );
 }
+
+

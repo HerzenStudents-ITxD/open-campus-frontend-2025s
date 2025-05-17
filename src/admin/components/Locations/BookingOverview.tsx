@@ -1,6 +1,5 @@
-interface Booking {
-  id: number;
-  eventName: string;
+export interface Booking {
+  id: string;
   location: string;
   date: string;
   user: string;
@@ -26,7 +25,7 @@ function BookingOverview({ bookings }: BookingOverviewProps) {
           {bookings.map((booking) => (
             <tr key={booking.id}>
               <td>{booking.location}</td>
-              <td>{new Date(booking.date).toLocaleDateString()}</td>
+              <td>{booking.date}</td>
               <td>{booking.user}</td>
             </tr>
           ))}

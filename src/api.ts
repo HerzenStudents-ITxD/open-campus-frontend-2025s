@@ -168,3 +168,88 @@ export async function deleteEvent(id: number, reason: string): Promise<void> {
   if (!res.ok) throw new Error("Ошибка при удалении мероприятия");
 }
 
+export interface Booking {
+  id: string;
+  date: string;
+  location: string;
+  user: string;
+}
+
+export async function fetchBookings(): Promise<Booking[]> {
+  const res = await fetch(`${API_BASE}/booking`);
+  if (!res.ok) throw new Error("Ошибка при загрузке бронирований");
+  return await res.json();
+}
+
+export interface NewsData {
+  id?: string;
+  title: string;
+  content: string;
+  author: string;
+  publishedAt: string;
+  isPublished: boolean;
+  imageFile?: File;
+  imagePath?: string;
+}
+
+const NEWS_API = "http://localhost:5241/api/news";
+
+// 🔹 Получить все новости
+export async function fetchNews(): Promise<NewsData[]> {
+  const res = await fetch(NEWS_API);
+  if (!res.ok) throw new Error("Ошибка при загрузке новостей");
+  return await res.json();
+}
+
+// 🔹 Создать новость
+export async function createNews(data: NewsData): Promise<NewsData> {
+  const formData = new FormData();
+  formData.append("Title", data.title);
+  formData.append("Content", data.content);
+  formData.append("Author", data.author);
+  formData.append("PublishedAt", data.publishedAt);
+  formData.append("IsPublished", String(data.isPublished));
+  if (data.imageFile) formData.append("Image", data.imageFile);
+
+  const res = await fetch(NEWS_API, {
+    method: "POST",
+    body: formData,
+  });
+
+  if (!res.ok) throw new Error("Ошибка при создании новости");
+  return await res.json();
+}
+
+// 🔹 Обновить новость
+export async function updateNews(id: string, data: NewsData): Promise<NewsData> {
+  const formData = new FormData();
+  formData.append("Title", data.title);
+  formData.append("Content", data.content);
+  formData.append("Author", data.author);
+  formData.append("PublishedAt", data.publishedAt);
+  formData.append("IsPublished", String(data.isPublished));
+  if (data.imageFile) formData.append("Image", data.imageFile);
+
+  const res = await fetch(`${NEWS_API}/${id}`, {
+    method: "PUT",
+    body: formData,
+  });
+
+  if (!res.ok) throw new Error("Ошибка при обновлении новости");
+  return await res.json();
+}
+
+// 🔹 Удалить новость
+export async function deleteNews(id: string, reason: string): Promise<void> {
+  const res = await fetch(`${NEWS_API}/${id}`, {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ reason }),
+  });
+
+  if (!res.ok) throw new Error("Ошибка при удалении новости");
+}
+
+

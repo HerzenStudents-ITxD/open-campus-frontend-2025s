@@ -13,7 +13,7 @@ import { NewsData } from "./NewsForm";
 interface NewsListProps {
   newsItems: NewsData[];
   onUpdate: (item: NewsData) => void;
-  onDelete: (id: number, reason: string) => void;
+  onDelete: (id: string, reason: string) => void;
 }
 
 export default function NewsList({
@@ -24,7 +24,7 @@ export default function NewsList({
   const [editing, setEditing] = useState<NewsData | null>(null);
   const [deleteReason, setDeleteReason] = useState("");
   const [showDelModal, setShowDelModal] = useState(false);
-  const [toDeleteId, setToDeleteId] = useState<number | null>(null);
+  const [toDeleteId, setToDeleteId] = useState<string | null>(null);
 
   const startEdit = (item: NewsData) => setEditing(item);
   const saveEdit = () => {
@@ -41,14 +41,19 @@ export default function NewsList({
     setEditing((prev) => (prev ? { ...prev, [name]: value } : null));
   };
 
+  const handleStatusChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const value = e.target.value === "published";
+    setEditing((prev) => (prev ? { ...prev, isPublished: value } : null));
+  };
+
   const handleImage = (e: React.ChangeEvent<HTMLInputElement>) => {
     const target = e.target as HTMLInputElement;
     if (target.files && target.files[0] && editing) {
-      setEditing({ ...editing, image: target.files![0] });
+      setEditing({ ...editing, imageFile: target.files[0] });
     }
   };
 
-  const askDelete = (id: number) => {
+  const askDelete = (id: string) => {
     setToDeleteId(id);
     setDeleteReason("");
     setShowDelModal(true);
@@ -69,16 +74,16 @@ export default function NewsList({
         <Row className="g-4">
           {newsItems.map((item) => (
             <Col md={6} key={item.id}>
-              <Card className="h-100 shadow-sm">
+              <Card className="h-100 shadow-sm" style={{ height: '400px', overflowY: 'auto' }}>
                 <Card.Body>
                   <Card.Title>{item.title}</Card.Title>
                   <Card.Subtitle className="mb-2 text-muted">
-                    {item.date} — {item.author}
+                    {new Date(item.publishedAt).toLocaleDateString()} — {item.author}
                   </Card.Subtitle>
-                  {item.image && (
+                  {item.imagePath && (
                     <div style={{ width: "100%", marginBottom: "1rem" }}>
                       <Image
-                        src={URL.createObjectURL(item.image)}
+                        src={`http://localhost:5241${item.imagePath}`}
                         thumbnail
                         fluid
                         style={{
@@ -91,21 +96,26 @@ export default function NewsList({
                     </div>
                   )}
                   <Card.Text>{item.content}</Card.Text>
-                  <Button
-                    size="sm"
-                    variant="primary"
-                    className="me-2"
-                    onClick={() => startEdit(item)}
-                  >
-                    Редактировать
-                  </Button>
-                  <Button
-                    size="sm"
-                    variant="danger"
-                    onClick={() => askDelete(item.id!)}
-                  >
-                    Удалить
-                  </Button>
+                  <div className="text-muted small">
+                    {item.isPublished ? "Опубликовано" : "Черновик"}
+                  </div>
+                  <div className="mt-2">
+                    <Button
+                      size="sm"
+                      variant="primary"
+                      className="me-2"
+                      onClick={() => startEdit(item)}
+                    >
+                      Редактировать
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="danger"
+                      onClick={() => askDelete(item.id!)}
+                    >
+                      Удалить
+                    </Button>
+                  </div>
                 </Card.Body>
               </Card>
             </Col>
@@ -169,8 +179,8 @@ export default function NewsList({
               <Form.Label>Дата публикации</Form.Label>
               <Form.Control
                 type="date"
-                name="date"
-                value={editing.date}
+                name="publishedAt"
+                value={editing.publishedAt}
                 onChange={handleField}
               />
             </Form.Group>
@@ -185,11 +195,22 @@ export default function NewsList({
             </Form.Group>
 
             <Form.Group className="mb-3">
+              <Form.Label>Статус</Form.Label>
+              <Form.Select
+                value={editing.isPublished ? "published" : "draft"}
+                onChange={handleStatusChange}
+              >
+                <option value="published">Будет опубликовано</option>
+                <option value="draft">Черновик</option>
+              </Form.Select>
+            </Form.Group>
+
+            <Form.Group className="mb-3">
               <Form.Label>Изображение</Form.Label>
-              {editing.image && (
+              {editing.imageFile && (
                 <div style={{ width: "100%", marginBottom: "1rem" }}>
                   <Image
-                    src={URL.createObjectURL(editing.image)}
+                    src={URL.createObjectURL(editing.imageFile)}
                     thumbnail
                     fluid
                     style={{
@@ -213,3 +234,4 @@ export default function NewsList({
     </div>
   );
 }
+

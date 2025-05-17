@@ -167,7 +167,7 @@ export default function UserAccount() {
     try {
       console.log('Отправка запроса на логин с данными:', { fullName, position });
 
-      const response = await axios.post('https://localhost:7299/api/User/login', {
+      const response = await axios.post('http://localhost:5241/api/User/login', {
         fullName,
         password: position,
       });
@@ -217,7 +217,7 @@ export default function UserAccount() {
     try {
       console.log('Отправка запроса на регистрацию с данными:', { fullName, position });
 
-      const response = await axios.post('https://localhost:7299/api/User', {
+      const response = await axios.post('http://localhost:5241/api/User', {
         fullName,
         password: position,
       });

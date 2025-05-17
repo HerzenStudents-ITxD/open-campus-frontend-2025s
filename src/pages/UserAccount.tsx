@@ -5,22 +5,41 @@ import logoImage from '../assets/logo.png';
 import calendarIcon from '../assets/calendar-icon.png';
 import Calendar from 'react-calendar';
 import '../styles/Calendar.css';
-import ChangePasswordModal from './ChangePasswordModal';
+import ChangePasswordModal from '../modal/ChangePasswordModal';
 import axios from 'axios';
+import { useTicketContext } from '../context/TicketContext';
+import MyTickets from '../tickets/MyTickets'; // путь укажи правильный
+import MyBookings from '../tickets/MyBooking';
+
 
 export default function UserAccount() {
-  const navigate = useNavigate();
 
+  //   // 🧪 Временная авторизация для разработки
+  // useEffect(() => {
+  //   const token = localStorage.getItem('token');
+  //   const userId = localStorage.getItem('userId');
+
+  //   // Если пользователь не вошел, создаем фиктивную авторизацию
+  //   if (!token || !userId) {
+  //     localStorage.setItem('token', 'mock-token');
+  //     localStorage.setItem('userId', 'mock-user-id');
+  //     localStorage.setItem('fullName', 'Иванов Иван Иванович');
+  //   }
+  // }, []);
+
+
+
+  const navigate = useNavigate();
   const [fullName, setFullName] = useState('');
   const [position, setPosition] = useState('');
   const [isSaved, setIsSaved] = useState(false);
   const [error, setError] = useState('');
   const [passwordError, setPasswordError] = useState('');
   const [buttonClicked, setButtonClicked] = useState(false);
-  const [showBookingCalendar, setShowBookingCalendar] = useState(false);
-  const [showTicketCalendar, setShowTicketCalendar] = useState(false);
   const [photo, setPhoto] = useState<string | null>(null);
   const [showPasswordModal, setShowPasswordModal] = useState(false);
+
+
 
   const isPasswordValid = (password: string) => {
     const pattern = /^(?=.*[A-Za-z])[A-Za-z0-9]{8,}$/;
@@ -54,12 +73,16 @@ export default function UserAccount() {
     formData.append('Avatar', file);
 
     try {
-      await axios.put('https://localhost:7299/api/User/1', formData, {
+      const userId = localStorage.getItem('userId');
+      if (!userId) return;
+
+      await axios.put(`https://localhost:7299/api/User/${userId}`, formData, {
         headers: {
           Authorization: `Bearer ${token}`,
           'Content-Type': 'multipart/form-data',
         },
       });
+
 
       // Обновляем фото в интерфейсе можно сказать локально
       const reader = new FileReader();
@@ -85,9 +108,21 @@ export default function UserAccount() {
     const getProfile = async () => {
       try {
         const token = localStorage.getItem('token');
-        if (!token) return;
+        const userId = localStorage.getItem('userId');
 
-        const response = await axios.get('https://localhost:7299/api/User/1', {
+        if (!token || !userId) return;
+
+        // // ✅ Если временный пользователь — используем заглушку
+        // if (userId === 'mock-user-id') {
+        //   setFullName(localStorage.getItem('fullName') || 'Иванов Иван Иванович');
+        //   setPosition('');
+        //   setPhoto(null); // Можно подставить тестовую картинку
+        //   setIsSaved(true);
+        //   return;
+        // }
+
+        // 🛑 Реальный запрос к серверу (если пользователь не мок)
+        const response = await axios.get(`https://localhost:7299/api/User/${userId}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -111,7 +146,17 @@ export default function UserAccount() {
 
 
 
-
+  // const handleLogin = () => {
+  //   if (!validateFullName(fullName) || !isPasswordValid(position)) {
+  //     setError('Введите корректные данные');
+  //     return;
+  //   }
+  //   localStorage.setItem("fullName", fullName);
+  //   localStorage.setItem("position", position);
+  //   setIsSaved(true);
+  //   setError('');
+  //   setButtonClicked(true);
+  // };
   const handleLogin = async () => {
     if (!validateFullName(fullName) || !isPasswordValid(position)) {
       setError('Введите корректные данные');
@@ -129,13 +174,17 @@ export default function UserAccount() {
 
       console.log('Ответ сервера:', response.data);
 
-      localStorage.setItem('token', response.data.token);
+      const token = response.data.token;
+      const userId = response.data.userId;
+
+      localStorage.setItem('token', token);
+      localStorage.setItem('userId', userId);
       setError('');
       setButtonClicked(true);
 
       // Загружаем профиль сразу после логина
-      const profileResponse = await axios.get('https://localhost:7299/api/User/1', {
-        headers: { Authorization: `Bearer ${response.data.token}` },
+      const profileResponse = await axios.get(`https://localhost:7299/api/User/${userId}`, {
+        headers: { Authorization: `Bearer ${token}` },
       });
 
       console.log('Данные профиля:', profileResponse.data);
@@ -149,6 +198,7 @@ export default function UserAccount() {
       setError('Неверные данные или ошибка сервера');
     }
   };
+
 
   
 
@@ -245,7 +295,7 @@ export default function UserAccount() {
             <label>ФИО</label>
             <input
               type="text"
-              className="form-control custom-select"
+              className="form-control"
               value={fullName}
               onChange={(e) => setFullName(e.target.value)}
               placeholder="Введите ФИО"
@@ -257,7 +307,7 @@ export default function UserAccount() {
             <label>Пароль</label>
             <input
               type="password"
-              className="form-control custom-select"
+              className="form-control"
               value={position}
               onChange={(e) => {
                 const value = e.target.value;
@@ -295,108 +345,124 @@ export default function UserAccount() {
         </div>
 
 
-        {/* БИЛЕТЫ */}
+
+
+
+        <MyTickets />
+        {/* БИЛЕТЫ
         <h2 className="section-title">Мои билеты</h2>
-                <div className="booking-card">
-                  <div className="booking-header">
-                    <strong className="col-event">Мероприятие</strong>
-                    <strong className="col-booked d-flex align-items-center gap-2">
-                      Забронировано
-                      <img
-                        src={calendarIcon}
-                        alt="calendar"
-                        width="26"
-                        height="26"
-                        style={{ cursor: 'pointer' }}
-                        onClick={() => setShowTicketCalendar(!showTicketCalendar)}
-                      />
-                    </strong>
-                    <strong className="col-status">Статус</strong>
-                  </div>
 
-                  {showTicketCalendar && (
-                    <div style={{ position: 'relative', marginTop: '10px' }}>
-                      <Calendar
-                        value={new Date('2025-11-16')}
-                        tileClassName={({ date }) =>
-                          date.toDateString() === new Date('2025-11-16').toDateString()
-                            ? 'highlight'
-                            : null
-                        }
-                      />
-                    </div>
-                  )}
+        {!isSaved ? (
+          <div className="more-event">
+            <span>Пока пусто!</span>
+          </div>
+        ) : (
+          <>
+            <div className="booking-card">
+              <div className="booking-header">
+                <strong className="col-event">Мероприятие</strong>
+                <strong className="col-booked d-flex align-items-center gap-2">
+                  Забронировано
+                  <img
+                    src={calendarIcon}
+                    alt="calendar"
+                    width="26"
+                    height="26"
+                    style={{ cursor: 'pointer' }}
+                    onClick={() => setShowTicketCalendar(!showTicketCalendar)}
+                  />
+                </strong>
+              </div>
 
-                  <div className="booking-content">
-                    <div className="col-event event-details">
-                      Цикл лекций "Искусство XX века". Блок первый. Искусство авангарда. Лекция первая. Ранний европейский авангард
-                      <div className="location-info">
-                        <strong>Локация:</strong>{' '}
-                        <Link to="/locations" className="location-link">открытая гостиная</Link>
-                      </div>
-                    </div>
-                    <div className="col-booked centered-text">16.11.2025</div>
-                    <div className="col-status centered-text text-success">Подтверждено</div>
+              {showTicketCalendar && (
+                <div style={{ marginTop: '10px', marginLeft: '150px' }}>
+                  <Calendar
+                    value={new Date('2025-11-16')}
+                    tileClassName={({ date }) =>
+                      date.toDateString() === new Date('2025-11-16').toDateString()
+                        ? 'highlight'
+                        : null
+                    }
+                  />
+                </div>
+              )}
+
+              <div className="booking-content">
+                <div className="col-event event-details">
+                  Цикл лекций "Искусство XX века". Блок первый. Искусство авангарда. Лекция первая. Ранний европейский авангард
+                  <div className="location-info">
+                    <strong>Локация:</strong>{' '}
+                    <Link to="/locations" className="location-link">открытая гостиная</Link>
                   </div>
                 </div>
+                <div className="col-booked centered-texts">16.11.2025; 15:00</div>
+              </div>
+            </div>
+          </>
+        )}
+        <div className="more-events">
+          <span>Посетите больше мероприятий!</span>
+          <Link to="/events" className="btn-dark-custom">Мероприятия</Link>
+        </div> */}
 
-                <div className="more-events">
-                  <span>Посетите больше мероприятий!</span>
-                  <Link to="/events" className="btn-dark-custom">Мероприятия</Link>
-                </div>
 
 
-
-        {/* БРОНИ */}
+        <MyBookings />
+        {/* БРОНИ
 
         <h2 className="section-title" style={{ marginTop: '40px' }}>Мои брони</h2>
-                <div className="booking-card">
-                  <div className="booking-header">
-                    <strong className="col-events">Помещение</strong>
-                    <strong className="col-booked d-flex align-items-center gap-2">
-                      Забронировано
-                      <img
-                        src={calendarIcon}
-                        alt="calendar"
-                        width="26"
-                        height="26"
-                        style={{ cursor: 'pointer' }}
-                        onClick={() => setShowBookingCalendar(!showBookingCalendar)}
-                      />
-                    </strong>
-                    <strong className="col-status">Длительность</strong>
-                    <strong className="col-status">Статус</strong>
 
-                  </div>
+        {!isSaved ? (
+          <div className="more-event">
+            <span>Пока пусто!</span>
+          </div>
+        ) : (
+          <>
+            <div className="booking-card">
+              <div className="booking-header">
+                <strong className="col-events">Помещение</strong>
+                <strong className="col-booked d-flex align-items-center gap-2">
+                  Забронировано
+                  <img
+                    src={calendarIcon}
+                    alt="calendar"
+                    width="26"
+                    height="26"
+                    style={{ cursor: 'pointer' }}
+                    onClick={() => setShowBookingCalendar(!showBookingCalendar)}
+                  />
+                </strong>
+                <strong className="col-status">Длительность</strong>
+              </div>
 
-                  {showBookingCalendar && (
-                    <div style={{ position: 'relative', marginTop: '10px' }}>
-                      <Calendar
-                        value={new Date('2025-11-13')}
-                        tileClassName={({ date }) =>
-                          date.toDateString() === new Date('2025-11-13').toDateString()
-                            ? 'highlight'
-                            : null
-                        }
-                      />
-                    </div>
-                  )}
-
-                  <div className="booking-content">
-                    <div className="event-details">
-                      <Link to="/locations" className="location-link">Большой коворкинг</Link>
-                    </div>
-
-                    <div className="col-booked centered-text">13.11.2025; 14:30</div>
-                    <div className="col-status centered-text">1,5 часа</div>
-                    <div className="col-status centered-text text-success">Подтверждено</div>
-                  </div>
+              {showBookingCalendar && (
+                <div style={{ marginTop: '10px' }}>
+                  <Calendar
+                    value={new Date('2025-11-13')}
+                    tileClassName={({ date }) =>
+                      date.toDateString() === new Date('2025-11-13').toDateString()
+                        ? 'highlight'
+                        : null
+                    }
+                  />
                 </div>
+              )}
 
-                <div className="more-events">
-                  <span>Забронируйте помещение!</span>
-                  <Link to="/locations" className="btn-dark-custom">Локации</Link>
+              <div className="booking-content">
+                <div className="event-details">
+                  <Link to="/locations" className="location-link">Большой коворкинг</Link>
                 </div>
+                <div className="col-booked centered-text">13.11.2025; 14:30</div>
+                <div className="col-status centered-text">1,5 часа</div>
+              </div>
+            </div>
+          </>
+        )}
+        <div className="more-events">
+          <span>Забронируйте помещение!</span>
+          <Link to="/locations" className="btn-dark-custom">Локации</Link>
+        </div> */}
+
 
 
 
@@ -406,7 +472,7 @@ export default function UserAccount() {
 
 
         <h2 className="section-title" style={{ marginTop: '40px' }}>История</h2>
-        <div className="more-events">
+        <div className="more-event">
           <span>Пока пусто!</span>
         </div>
 

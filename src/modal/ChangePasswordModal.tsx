@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import '../styles/ChangePasswordModal.css';
 import axios from 'axios';
+
 
 interface Props {
   onClose: () => void;
@@ -13,7 +14,15 @@ export default function ChangePasswordModal({ onClose }: Props) {
   const [error, setError] = useState('');
   const [isClosing, setIsClosing] = useState(false);
 
-
+useEffect(() => {
+  const btn = document.querySelector('.btn-orange') as HTMLElement;
+  if (btn) {
+    btn.classList.add('dimmed');
+    return () => {
+      btn.classList.remove('dimmed');
+    };
+  }
+}, []);
 
 
 
@@ -91,7 +100,7 @@ export default function ChangePasswordModal({ onClose }: Props) {
   };
 
   return (
-    <div className={`modal-overlay d-flex justify-content-center align-items-center ${isClosing ? 'fade-out' : ''}`}>
+    <div className="modal-overlay">
       <div className={`modal-window bg-dark text-white p-4 rounded-4 shadow ${isClosing ? 'slide-up' : ''}`}>
         <button className="btn-close btn-close-white ms-auto" onClick={startClosing}></button>
         <h2 className="fs-3 text-center mb-4">Изменить пароль</h2>

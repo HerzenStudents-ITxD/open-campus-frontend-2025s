@@ -3,10 +3,16 @@ import { Link } from 'react-router-dom';
 import '../styles/Home.css';
 import logo from '../assets/logo_home.png'; // логотип "Открытый кампус"
 import avatar from '../assets/avatar.png';
-import { Navbar, Nav, Dropdown } from 'react-bootstrap';
-import { LinkContainer } from 'react-router-bootstrap';
+import { useState } from 'react';
+import { Navbar, Nav, Dropdown, Modal, Form } from 'react-bootstrap';
+import EventRegistrationModal from '../modal/EventRegistrationModal';
+import BookingModal from '../modal/BookingModal';
 
 const Home: React.FC = () => {
+
+  const [showEventModal, setShowEventModal] = useState(false);
+  const [showBookingModal, setShowBookingModal] = useState(false);
+
   return (
     <div className="home-wrapper">
       {/* Верхняя навигационная панель */}
@@ -49,14 +55,32 @@ const Home: React.FC = () => {
         </p>
 
         <div className="button-group">
-          <Link to="/events" className="home-btn-orange">
+          <button 
+            onClick={() => setShowEventModal(true)} 
+            className="home-btn-orange"
+          >
             Зарегистрироваться на мероприятие
-          </Link>
-          <Link to="/locations" className="home-btn-orange">
+          </button>
+
+          <button 
+            onClick={() => setShowBookingModal(true)} 
+            className="home-btn-orange"
+          >
             Забронировать помещение
-          </Link>
+          </button>
+
         </div>
       </div>
+
+      <EventRegistrationModal 
+        show={showEventModal}
+        onHide={() => setShowEventModal(false)}
+      />
+
+      <BookingModal
+        show={showBookingModal}
+        onHide={() => setShowBookingModal(false)}
+      />
     </div>
   );
 };

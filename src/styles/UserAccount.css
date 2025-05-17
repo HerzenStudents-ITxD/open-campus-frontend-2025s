@@ -1,16 +1,20 @@
-.user-account-container {
-  display: flex;
-  min-height: 100vh;
-  background-color: #f9f3ee;
-  font-family: sans-serif;
+html, body {
+  margin: 0;
+  padding: 0;
+  height: auto;
+  width: 100%;
 }
 
 body {
-  margin: 0;
+  overflow-y: auto;
+}
+
+.user-account-container {
   display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
+  background-color: #f9f3ee;
+  font-family: sans-serif;
+  width: 100vw;
+  flex-direction: row; /* если нужно */
 }
 
 .sidebar {
@@ -48,13 +52,13 @@ body {
   transition: background-color 0.2s ease;
   text-decoration: none;
   font-family: Literal, sans-serif;
-  z-index: 9999;
+  z-index: 5000;
 }
 
 .btn-orange:hover {
   background-color: #d13e1a;
   color: white;
-  z-index: 9999;
+  z-index: 5000;
 }
 
 .btn-dark-custom {
@@ -149,6 +153,8 @@ button.password:hover {
 .main-content {
   flex: 1;
   padding: 40px;
+  overflow: visible;
+  min-height: auto;
 }
 
 .profile-header {
@@ -198,11 +204,17 @@ button.password:hover {
   height: 40px;
   font-size: 1rem;
   padding: 6px 12px;
-  border-radius: 6px;
+  border-radius: 8px;
   border: 1px solid #ccc;
   background-color: #e5e5e5; 
   box-sizing: border-box;
   margin: -2px;
+}
+
+.form-control:focus {
+  outline: none;              /* убираем синюю обводку */
+  border: 1px solid black;    /* черная рамка */
+  box-shadow: none;           /* на всякий случай убираем подсветку */
 }
 
 .section-title {
@@ -279,7 +291,15 @@ button.password:hover {
   justify-content: center;
   align-items: center;
   text-align: center;
-  margin-left: 100px;
+  margin-left: 260px;
+}
+
+.centered-texts {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  margin-left: 200px;
 }
 
 .event-details {
@@ -299,6 +319,18 @@ button.password:hover {
   justify-content: space-between;
   align-items: center;
   padding-left: 1.5rem; 
+}
+
+.more-event {
+  background-color: #ffffff;
+  padding: 1rem;
+  margin-bottom: 15px;
+  border-radius: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-left: 1.5rem; 
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
 .custom-select {

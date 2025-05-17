@@ -1,0 +1,120 @@
+.tickets-container {
+  width: 100%;
+  max-width: 100%;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.tickets-main-title {
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 20px;
+  color: #000;
+}
+
+.full-width-ticket {
+  width: 100%;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 20px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.ticket-header {
+  display: flex;
+  background-color: #f8f8f8;
+  padding: 12px 16px;
+  border-bottom: 1px solid #e0e0e0;
+  font-weight: 500;
+}
+
+.ticket-content {
+  display: flex;
+  padding: 16px;
+  background-color: #fff;
+}
+
+.ticket-col-event {
+  flex: 3;
+  font-weight: 700;
+  padding-right: 20px;
+  padding-left: 60px; 
+}
+
+/* Для заголовка таблицы */
+.ticket-header .ticket-col-date {
+  padding-right: 65px;  /* Такой же отступ как у содержимого */
+}
+
+.ticket-col-date {
+  flex: 1;
+  font-weight: 700;
+  text-align: right;  /* Выравниваем текст по правому краю */
+  padding-right: 65px;  /* Добавляем отступ справа */
+  padding-left: 20px
+}
+
+.ticket-col-booked {
+  flex: 1;
+  text-align: right;
+  color: #1D213C;
+  font-weight: 700;
+  padding-right: 80px;
+}
+
+.ticket-title {
+  font-weight: 500;
+  margin-bottom: 8px;
+  line-height: 1.4;
+}
+
+.ticket-location {
+  display: flex;
+  gap: 5px;
+  font-size: 14px;
+}
+
+.location-label {
+  font-weight: 500;
+}
+
+.location-value {
+  color: #666;
+}
+
+.empty-tickets {
+  padding: 40px;
+  text-align: center;
+  background-color: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+.more-events-block {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px;
+  background-color: #e0e0e0;
+  border-radius: 8px;
+  margin-top: 20px;
+}
+
+.events-button {
+  background-color: #1D213C;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  font-size: 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background-color 0.2s;
+}
+
+.events-button:hover {
+  background-color: #0e446d;
+  color: #fff;
+}

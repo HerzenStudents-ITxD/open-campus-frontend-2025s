@@ -1,7 +1,8 @@
-import { Routes, Route, Link, useLocation} from "react-router-dom";
+import { Routes, Route, Link, useLocation } from "react-router-dom";
 import Home from "./pages/Home";
 import Events from "./pages/Events";
-import Locations from "./pages/Locations";
+// Используем компонент из components (если ты используешь кастомную версию Locations)
+import Locations from "./components/Locations"; // или "./pages/Locations" — смотри, какой актуален
 import About from "./pages/About";
 import AboutEvent from "./pages/AboutEvent";
 import UserAccount from "./pages/UserAccount";
@@ -15,18 +16,21 @@ import AdminLocations from "./admin/pages/AdminLocations";
 import AdminAbout from "./admin/pages/AdminAbout";
 import AdminEditorAccount from "./admin/pages/AdminEditorAccount";
 
-// Импорт AdminLayout
+// Макет админки
 import AdminLayout from "./admin/layouts/AdminLayout";
 
 function AppRoutes() {
   const location = useLocation();
-  const isAdminPage = location.pathname.startsWith("/admin")||
-                      location.pathname === "/user-account"||
-                      location.pathname === "/";
+
+  const isHiddenNavPage =
+    location.pathname.startsWith("/admin") ||
+    location.pathname === "/user-account" ||
+    location.pathname === "/" || // как в версии одногруппников
+    location.pathname.startsWith("/locations"); // как у тебя
 
   return (
     <>
-      {!isAdminPage && (
+      {!isHiddenNavPage && (
         <nav style={{ marginBottom: "20px" }}>
           <Link to="/">Главная</Link> |{" "}
           <Link to="/events">Мероприятия</Link> |{" "}
@@ -45,10 +49,10 @@ function AppRoutes() {
         <Route path="/about" element={<About />} />
         <Route path="/about-event" element={<AboutEvent />} />
         <Route path="/user-account" element={<UserAccount />} />
-        <Route path="*" element={<NotFound />} />
         <Route path="/profile" element={<UserAccount />} />
+        <Route path="*" element={<NotFound />} />
 
-        {/* Админка с AdminLayout */}
+        {/* Админка с макетом */}
         <Route path="/admin" element={<AdminLayout />}>
           <Route path="home" element={<AdminHome />} />
           <Route path="dashboard" element={<AdminDashboard />} />

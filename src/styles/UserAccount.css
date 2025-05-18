@@ -1,22 +1,23 @@
+/* Общие сбросы и контейнер */
 html, body {
   margin: 0;
   padding: 0;
-  height: auto;
+  min-height: 100vh;
   width: 100%;
-}
-
-body {
+  font-family: sans-serif;
   overflow-y: auto;
 }
 
 .user-account-container {
   display: flex;
+  min-height: 100vh;
   background-color: #f9f3ee;
   font-family: sans-serif;
+  flex-direction: row;
   width: 100vw;
-  flex-direction: row; /* если нужно */
 }
 
+/* Сайдбар */
 .sidebar {
   width: 250px;
   background-color: #e5e5e5;
@@ -40,11 +41,12 @@ body {
   margin: 0 auto 30px auto;
 }
 
+/* Кнопки */
 .btn-orange {
   background-color: #ff4d1f;
   color: white;
   border: none;  
-  padding: 10px 16px; /* или 10px, если нужно одинаковое расстояние */
+  padding: 10px 16px;
   font-size: 1rem;
   border-radius: 8px;
   cursor: pointer;
@@ -86,7 +88,7 @@ body {
   padding: 10px 16px;
   margin-top: 10px;
   text-align: center;
-  margin-bottom: -10px; /* Отступ от кнопки до "Выйти из аккаунта" */
+  margin-bottom: -10px;
   display: block;
   text-decoration: none;
 }
@@ -95,45 +97,6 @@ body {
   color: #ff4d1f;
   border: 2px solid #ff4d1f;
 }
-
-.save-btn {
-  background-color: #ccc;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  font-size: 1rem;
-  padding: 3px 10px;
-  cursor: not-allowed;
-  transition: background-color 0.2s ease;
-  margin-top: 1px; /* Уменьшен отступ сверху */
-}
-
-.save-btn.active {
-  background-color: #1D213C;
-  color: white;
-  cursor: pointer;
-}
-
-.save-btn.active:hover {
-  background-color: #1d2124;
-}
-.save-btn.disabled {
-  background-color: #ccc;
-  cursor: not-allowed;
-}
-
-.save-btn.disabled:hover {
-  background-color: #ccc;
-  cursor: not-allowed;
-}
-
-/* .logout-link {
-  margin-top: auto;
-  color: #e6451b;
-  text-decoration: none;
-  text-align: center;
-  display: block;
-} */
 
 button.password {
   color: #1D213C;
@@ -150,6 +113,36 @@ button.password:hover {
   color: #ff4d1f;
 }
 
+/* Save Button */
+.save-btn {
+  background-color: #ccc;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  padding: 3px 10px;
+  cursor: not-allowed;
+  transition: background-color 0.2s ease;
+  margin-top: 1px;
+}
+
+.save-btn.active {
+  background-color: #1D213C;
+  color: white;
+  cursor: pointer;
+}
+
+.save-btn.active:hover {
+  background-color: #1d2124;
+}
+
+.save-btn.disabled,
+.save-btn.disabled:hover {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+/* Основной контент */
 .main-content {
   flex: 1;
   padding: 40px;
@@ -193,6 +186,7 @@ button.password:hover {
   cursor: pointer;
 }
 
+/* Формы */
 .form-fields {
   flex: 1;
   display: flex;
@@ -212,11 +206,12 @@ button.password:hover {
 }
 
 .form-control:focus {
-  outline: none;              /* убираем синюю обводку */
-  border: 1px solid black;    /* черная рамка */
-  box-shadow: none;           /* на всякий случай убираем подсветку */
+  outline: none;
+  border: 1px solid black;
+  box-shadow: none;
 }
 
+/* Бронирования */
 .section-title {
   font-weight: bold;
   font-size: 1.5rem;
@@ -245,17 +240,16 @@ button.password:hover {
 .booking-content {
   display: flex;
   align-items: center;
-  
 }
 
 .event-details {
   word-break: break-word;
-  margin-top: 10px; /* отступ сверху для текста лекции */
+  margin-top: 10px;
   line-height: 1.5;
 }
 
 .location-info {
-  margin-top: 10px; /* чуть ниже от текста */
+  margin-top: 10px;
   font-size: 0.95rem;
 }
 
@@ -269,7 +263,7 @@ button.password:hover {
   color: #ff4d1f;
 }
 
-
+/* Колонки */
 .col-event {
   width: 60%;
   padding-right: 1rem;
@@ -286,70 +280,58 @@ button.password:hover {
   text-align: center;
 }
 
-.centered-text {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  margin-left: 260px;
-}
-
+/* Центрирование */
+.centered-text,
 .centered-texts {
   display: flex;
   justify-content: center;
   align-items: center;
   text-align: center;
+}
+
+.centered-text {
+  margin-left: 260px;
+}
+
+.centered-texts {
   margin-left: 200px;
 }
 
-.event-details {
-  word-break: break-word;
-}
-
-.booking-actions {
-  display: flex;
-  justify-content: flex-end;
-}
-
-.more-events {
+/* Дополнительные события */
+.more-events, .more-event {
   background-color: #e0e0e0;
   padding: 1rem;
   border-radius: 10px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding-left: 1.5rem; 
+  padding-left: 1.5rem;
 }
 
 .more-event {
   background-color: #ffffff;
-  padding: 1rem;
   margin-bottom: 15px;
-  border-radius: 10px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding-left: 1.5rem; 
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
+/* Селекты */
 .custom-select {
-  color: #1D213C; /* цвет выбранного значения */
+  color: #1D213C;
   background-color: #e5e5e5;
   border: 1px solid #ccc;
   border-radius: 6px;
   padding: 8px 12px;
   font-size: 1rem;
   height: 40px;
-  appearance: none; /* убирает дефолтные стили браузера */
+  appearance: none;
 }
 
-/* Цвет текста в раскрывающемся списке */
 .custom-select option {
   color: #1D213C;
   background-color: #ffffff;
 }
 
+/* Кнопочные группы */
 .button-group {
   display: flex;
   gap: 10px;
@@ -360,12 +342,14 @@ button.password:hover {
   flex: 1;
 }
 
+/* Подсказки */
 .hint-text.error {
   color: #e6451b;
   font-size: 0.8rem;
   margin-top: 2px;
 }
 
+/* Фиксированные кнопки */
 .fixed-actions {
   position: fixed;
   bottom: 20px;

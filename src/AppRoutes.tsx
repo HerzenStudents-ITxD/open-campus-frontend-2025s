@@ -26,7 +26,7 @@ function AppRoutes() {
     location.pathname.startsWith("/admin") ||
     location.pathname === "/user-account" ||
     location.pathname === "/" || // как в версии одногруппников
-    location.pathname.startsWith("/locations"); // как у тебя
+    location.pathname.startsWith("/locations") || // как у тебя
     location.pathname === "/events";
 
   return (

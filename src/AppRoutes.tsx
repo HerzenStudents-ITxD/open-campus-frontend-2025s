@@ -20,9 +20,12 @@ import AdminLayout from "./admin/layouts/AdminLayout";
 
 function AppRoutes() {
   const location = useLocation();
-  const isAdminPage = location.pathname.startsWith("/admin")||
-                      location.pathname === "/user-account"||
-                      location.pathname === "/";
+  const isAdminPage =
+    location.pathname.startsWith("/admin") ||
+    location.pathname === "/user-account" ||
+    location.pathname === "/" ||
+    location.pathname === "/events";
+
 
   return (
     <>

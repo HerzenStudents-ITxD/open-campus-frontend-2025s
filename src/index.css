@@ -20,6 +20,137 @@
   font-style: normal;
 }
 
+.literal-bold-white {
+  font-family: 'Literal', serif;
+  font-weight: normal;
+  font-size: 14px;
+  -webkit-text-stroke: 0.5px #ffffff;
+  letter-spacing: 1px;
+  text-shadow: 0 0.2px 0.3px rgba(0, 0, 0, 0.3); /* визуальный bold */
+}
+
+.space-card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.space-card:hover {
+  transform: scale(1.05);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+}
+
+.map-label {
+  font-weight: bold;
+  color: black;
+  transition: color 0.3s ease, transform 0.3s ease;
+  pointer-events: none;
+}
+
+.map-label.highlighted {
+  color: #F44E1A;
+  transform: scale(1.1);
+}
+
+.space-card {
+  border-radius: 15px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
+  overflow: hidden;
+}
+
+.space-card:hover {
+  transform: scale(1.03);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.space-card1:hover .card-overlay .position-absolute:nth-child(1){
+  background-image: url('/src/assets/Locations/IMG_2875.png');
+  background-size: 120%; /* или 80% для уменьшения */
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.space-card2:hover .card-overlay .position-absolute:nth-child(1){
+  background-image: url('/src/assets/Locations/22e0f3d882004a08635bdb9d952db270.png');
+    background-size: 120%; /* или 80% для уменьшения */
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.space-card3:hover .card-overlay .position-absolute:nth-child(1){
+  background-image: url('/src/assets/Locations/Kovorking_spb_1.png');
+    background-size: 120%; /* или 80% для уменьшения */
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.space-card4:hover .card-overlay .position-absolute:nth-child(1){
+  background-image: url('/src/assets/Locations/8123ec3f19e41da39a191929fa693d27.png');
+    background-size: 120%; /* или 80% для уменьшения */
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+/* Панель с описанием (белая часть) */
+.card-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: 15px;
+  z-index: 2;
+  transition: opacity 0.1s ease;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+/* Нижняя белая панель, содержащая описание */
+.card-overlay .position-absolute:nth-child(1) {
+  background-color: white;
+  border-radius: 15px;
+  padding: 20px;
+  min-height: 200px;
+  transition: opacity 0.1s ease;
+  z-index: 2;
+}
+
+
+.card-description {
+  font-size: 16px;
+  padding-top: 50px;
+
+}
+
+.space-card:hover .card-description {
+  opacity: 0;
+}
+
+.literal-bold {
+  font-family: 'Literal', serif;
+  font-weight: normal;
+  font-size: 16px;
+  -webkit-text-stroke: 1px #1D213C;
+  letter-spacing: 0.3px;
+  text-shadow: 0 0.2px 0.3px rgba(0, 0, 0, 0.3); /* визуальный bold */
+}
+
+.literal-superbold {
+  font-family: 'Literal', serif;
+  font-weight: normal;
+  font-size: 130px;
+  color: white;
+  letter-spacing: 0.3px;
+  text-shadow:
+      2px 2px 6px rgba(0, 0, 0, 0.8),
+      -2px -2px 6px rgba(0, 0, 0, 0.8);
+
+  -webkit-text-stroke: 5px white;
+
+  text-transform: lowercase;
+}
+
+
 a {
   font-weight: 500;
   color: #1D213C;
@@ -31,11 +162,12 @@ a:hover {
 
 body {
   margin: 0;
-  display: flex;
-  place-items: center;
   min-width: 320px;
   min-height: 100vh;
+  font-family: Literal, Inter, system-ui, sans-serif;
+  background-color: #EBE6E2;
 }
+
 
 h1 {
   font-size: 3.2em;
@@ -206,3 +338,34 @@ button:focus-visible {
   display: none;
 }
 
+.menu-link {
+  font-size: 12px;
+  line-height: 1.5;
+  font-weight: normal;
+  color: #212529;
+  padding: 6px 12px;
+  width: 100%;
+  display: block;
+  text-decoration: none;
+  transition: color 0.2s ease-in-out;
+  font-family: 'Literal', serif;
+}
+
+.menu-link:hover {
+  color: #F44E1A;
+}
+
+@keyframes fadeInFast {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-in-fast {
+  animation: fadeInFast 0.2s ease-in-out;
+}

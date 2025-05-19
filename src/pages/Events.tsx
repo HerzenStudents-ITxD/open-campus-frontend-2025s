@@ -33,19 +33,25 @@ export default function EventsPage() {
   }, []);
 
   // Обработчик фильтрации по дате
-  const handleFilterChange = useCallback((date) => {
-    if (!date) {
-      setFilteredEvents(events);
-      return;
-    }
+const handleFilterChange = useCallback((date) => {
+  if (!date) {
+    setFilteredEvents(events);
+    return;
+  }
+  
+  const filtered = events.filter(event => {
+    const eventDate = new Date(event.date);
+    const filterDate = new Date(date);
     
-    const filtered = events.filter(event => {
-      const eventDate = new Date(event.date).toISOString().split('T')[0];
-      return eventDate === date;
-    });
-    
-    setFilteredEvents(filtered);
-  }, [events]);
+    return (
+      eventDate.getFullYear() === filterDate.getFullYear() &&
+      eventDate.getMonth() === filterDate.getMonth() &&
+      eventDate.getDate() === filterDate.getDate()
+    );
+  });
+  
+  setFilteredEvents(filtered);
+}, [events]);
 
   // Загружаем данные при монтировании компонента
   useEffect(() => {

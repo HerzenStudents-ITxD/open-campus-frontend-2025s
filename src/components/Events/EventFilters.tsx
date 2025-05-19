@@ -1,20 +1,40 @@
 import { useState } from "react";
 import "../../styles/Events.css";
 
+// Вспомогательная функция для сравнения дат
+const isSameDate = (date1, date2) => {
+  const d1 = new Date(date1);
+  const d2 = new Date(date2);
+  return (
+    d1.getFullYear() === d2.getFullYear() &&
+    d1.getMonth() === d2.getMonth() &&
+    d1.getDate() === d2.getDate()
+  );
+};
+
 export default function EventFilters({ onFilterChange }) {
   const [dateFilter, setDateFilter] = useState("");
 
-  // Обработчики изменений фильтров
+  // Получение даты в формате YYYY-MM-DD
+  const getFormattedDate = (date) => {
+    const d = new Date(date);
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  };
+
   const handleTodayClick = () => {
-    const today = new Date().toISOString().split('T')[0];
-    setDateFilter(today);
-    onFilterChange(today);
+    const today = new Date();
+    const todayStr = getFormattedDate(today);
+    setDateFilter(todayStr);
+    onFilterChange(todayStr);
   };
 
   const handleTomorrowClick = () => {
     const tomorrow = new Date();
     tomorrow.setDate(tomorrow.getDate() + 1);
-    const tomorrowStr = tomorrow.toISOString().split('T')[0];
+    const tomorrowStr = getFormattedDate(tomorrow);
     setDateFilter(tomorrowStr);
     onFilterChange(tomorrowStr);
   };
@@ -25,7 +45,6 @@ export default function EventFilters({ onFilterChange }) {
     let daysUntilWeekend;
     
     if (dayOfWeek === 0 || dayOfWeek === 6) {
-      // Уже выходные
       daysUntilWeekend = 0;
     } else {
       daysUntilWeekend = 6 - dayOfWeek;
@@ -33,45 +52,49 @@ export default function EventFilters({ onFilterChange }) {
     
     const weekendDate = new Date();
     weekendDate.setDate(today.getDate() + daysUntilWeekend);
-    const weekendStr = weekendDate.toISOString().split('T')[0];
+    const weekendStr = getFormattedDate(weekendDate);
     setDateFilter(weekendStr);
     onFilterChange(weekendStr);
   };
 
   const handleDateChange = (e) => {
-    setDateFilter(e.target.value);
-    onFilterChange(e.target.value);
+    const selectedDate = e.target.value;
+    setDateFilter(selectedDate);
+    onFilterChange(selectedDate);
   };
 
   const handleResetClick = () => {
     setDateFilter("");
-    onFilterChange("");
+    onFilterChange(null); // Используем null для сброса
   };
+
+  // Проверка активных кнопок
+  const todayStr = getFormattedDate(new Date());
+  const tomorrowStr = getFormattedDate(new Date(new Date().setDate(new Date().getDate() + 1)));
 
   return (
     <div className="event-filters">
       <button 
-        className={`filter-btn ${dateFilter === new Date().toISOString().split('T')[0] ? 'active' : ''}`}
+        className={`filter-btn ${dateFilter === todayStr ? 'active' : ''}`}
         onClick={handleTodayClick}
       >
         Сегодня
       </button>
       
       <button 
-        className={`filter-btn ${dateFilter === new Date(new Date().setDate(new Date().getDate() + 1)).toISOString().split('T')[0] ? 'active' : ''}`}
+        className={`filter-btn ${dateFilter === tomorrowStr ? 'active' : ''}`}
         onClick={handleTomorrowClick}
       >
         Завтра
       </button>
       
       <button 
-        className="filter-btn"
+        className={`filter-btn ${dateFilter === getFormattedDate(getNextWeekendDate()) ? 'active' : ''}`}
         onClick={handleWeekendClick}
       >
         Выходные
       </button>
 
-      {/* Выбор конкретной даты */}
       <label className="date-label">
         <input
           type="date"
@@ -81,7 +104,6 @@ export default function EventFilters({ onFilterChange }) {
         />
       </label>
 
-      {/* Кнопка сброса */}
       <button 
         className="filter-btn"
         onClick={handleResetClick}
@@ -90,6 +112,23 @@ export default function EventFilters({ onFilterChange }) {
       </button>
     </div>
   );
+}
+
+// Функция для получения даты ближайших выходных
+function getNextWeekendDate() {
+  const today = new Date();
+  const dayOfWeek = today.getDay();
+  let daysUntilWeekend;
+  
+  if (dayOfWeek === 0 || dayOfWeek === 6) {
+    daysUntilWeekend = 0;
+  } else {
+    daysUntilWeekend = 6 - dayOfWeek;
+  }
+  
+  const weekendDate = new Date();
+  weekendDate.setDate(today.getDate() + daysUntilWeekend);
+  return weekendDate;
 }
 
 

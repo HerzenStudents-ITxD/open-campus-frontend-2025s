@@ -1,22 +1,43 @@
-import { useState } from "react";
-import EventForm, { EventData } from "../components/Events/EventForm";
+import { useEffect, useState } from "react";
+import { EventData } from "../../api";
 import EventList from "../components/Events/EventList";
 import { Container, Row, Col } from "react-bootstrap";
+import { fetchEvents, createEvent, updateEvent, deleteEvent } from "../../api";
+import EventForm from "../components/Events/EventForm";
 
 function AdminEvent() {
   const [events, setEvents] = useState<EventData[]>([]);
 
-  const handleAdd = (event: EventData) => {
-    setEvents((prev) => [...prev, event]);
+  useEffect(() => {
+    fetchEvents().then(setEvents).catch(console.error);
+  }, []);
+
+  const handleAdd = async (event: EventData) => {
+    try {
+      const newEvent = await createEvent(event);
+      setEvents((prev) => [...prev, newEvent]);
+    } catch (err) {
+      console.error("Ошибка создания:", err);
+    }
   };
 
-  const handleUpdate = (updatedEvent: EventData) => {
-    setEvents((prev) => prev.map((event) => (event.id === updatedEvent.id ? updatedEvent : event)));
+  const handleUpdate = async (updatedEvent: EventData) => {
+    try {
+      const res = await updateEvent(updatedEvent.id, updatedEvent);
+      setEvents((prev) => prev.map((e) => (e.id === res.id ? res : e)));
+    } catch (err) {
+      console.error("Ошибка обновления:", err);
+    }
   };
 
-  const handleDelete = (id: number, reason: string) => {
-    console.log("Причина удаления:", reason);
-    setEvents((prev) => prev.filter((event) => event.id !== id));
+  const handleDelete = async (id: string, reason: string) => {
+    try {
+      console.log("Причина удаления:", reason);
+      await deleteEvent(id, reason);
+      setEvents((prev) => prev.filter((e) => e.id !== id));
+    } catch (err) {
+      console.error("Ошибка удаления:", err);
+    }
   };
 
   return (
@@ -27,7 +48,11 @@ function AdminEvent() {
             <h1>Редактирование мероприятий</h1>
             <hr />
             <EventForm onSubmit={handleAdd} />
-            <EventList events={events} onUpdate={handleUpdate} onDelete={handleDelete} />
+            <EventList
+              events={events}
+              onUpdate={handleUpdate}
+              onDelete={handleDelete}
+            />
           </Col>
         </Row>
       </Container>
@@ -36,5 +61,6 @@ function AdminEvent() {
 }
 
 export default AdminEvent;
+
 
 

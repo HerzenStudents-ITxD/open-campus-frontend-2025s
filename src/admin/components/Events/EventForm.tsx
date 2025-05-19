@@ -1,17 +1,6 @@
 import { useState } from "react";
 import { Form, Button } from "react-bootstrap";
-
-export interface EventData {
-  id: number;
-  title: string;
-  description: string;
-  date: string;
-  location: string;
-  organizer: string;
-  createdAt: string;
-  createdBy: string;
-  image?: File | null;
-}
+import { EventData } from "../../../api";
 
 interface EventFormProps {
   onSubmit: (event: EventData) => void;
@@ -19,7 +8,7 @@ interface EventFormProps {
 
 export default function EventForm({ onSubmit }: EventFormProps) {
   const [event, setEvent] = useState<EventData>({
-    id: 0,
+    id: "",
     title: "",
     description: "",
     date: "",
@@ -43,9 +32,9 @@ export default function EventForm({ onSubmit }: EventFormProps) {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSubmit({ ...event, id: Date.now() });
+    onSubmit({ ...event, id: Date.now().toString() });
     setEvent({
-      id: 0,
+      id: "",
       title: "",
       description: "",
       date: "",

@@ -74,7 +74,7 @@ export default function NewsList({
         <Row className="g-4">
           {newsItems.map((item) => (
             <Col md={6} key={item.id}>
-              <Card className="h-100 shadow-sm" style={{ height: '400px', overflowY: 'auto' }}>
+              <Card className="h-100 shadow-sm" style={{ maxWidth: "600px" }}>
                 <Card.Body>
                   <Card.Title>{item.title}</Card.Title>
                   <Card.Subtitle className="mb-2 text-muted">
@@ -85,13 +85,8 @@ export default function NewsList({
                       <Image
                         src={`http://localhost:5241${item.imagePath}`}
                         thumbnail
-                        fluid
-                        style={{
-                          width: "100%",
-                          height: "200px",
-                          objectFit: "cover",
-                          borderRadius: "0.5rem",
-                        }}
+                        className="mb-2"
+                        style={{ maxWidth: 200 }}
                       />
                     </div>
                   )}

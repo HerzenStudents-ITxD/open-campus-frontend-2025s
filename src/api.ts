@@ -171,17 +171,27 @@ export async function changePassword(
 // }
 
 export interface Booking {
-  id: string;
-  date: string;
-  location: string;
-  user: string;
+  userId: string;
+  locationId: number;
+  dateStart: string; 
+  dateEnd: string;
+  purpose: string;
+  status?: string;
 }
 
-export async function fetchBookings(): Promise<Booking[]> {
-  const res = await fetch(`${API_BASE}/booking`);
-  if (!res.ok) throw new Error("Ошибка при загрузке бронирований");
-  return await res.json();
+export async function createBooking(data: Booking): Promise<void> {
+  const res = await fetch(`${API_BASE}/booking`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  });
+
+  if (!res.ok) {
+    const errText = await res.text();
+    throw new Error(errText || "Ошибка при создании бронирования");
+  }
 }
+
 
 export interface NewsData {
   id?: string;
@@ -329,4 +339,3 @@ export const deleteEvent = async (id: string, reason: string): Promise<void> => 
     headers: { "Content-Type": "application/json" },
   });
 };
-

@@ -10,6 +10,11 @@
   z-index: 0;
 }
 
+.ok-logo {
+  max-width: 240px;
+  margin-bottom: 20px;
+}
+
 /* Контейнер поверх фона */
 .home-overlay {
   position: absolute;
@@ -112,6 +117,23 @@
   z-index: 9999;
 }
 
+.home-orange {
+  background-color: #ff4d1f;
+  color: white;
+  border: none;  
+  padding: 8px 16px; /* или 10px, если нужно одинаковое расстояние */
+  font-size: 1rem;
+  font-weight: 300;
+  border-radius: 8px;
+  width: 190px; 
+  cursor: pointer;
+  text-align: center;
+  transition: background-color 0.2s ease;
+  text-decoration: none;
+  font-family: Literal, sans-serif;
+  z-index: 9999;
+}
+
 .button-group .home-btn-orange:not(:last-child) {
   margin-right: 40px; /* дублируем расстояние между кнопками */
 }
@@ -133,4 +155,178 @@
   color: #6c757d; 
   padding: 4px 12px;
   margin-bottom: 3px;
+}
+
+/* Основной контейнер для контента */
+.content-section {
+  width: 100%;
+  background-color: white;
+  color: #1D213C;
+  padding: 60px 20px;
+  box-sizing: border-box;
+  font-family: Literal, sans-serif;
+}
+
+/* Блоки контента */
+.content-block {
+  max-width: 1200px;
+  margin: 0 auto 40px;
+  padding: 0 20px;
+}
+
+.content-block-accent {
+  background-color: rgba(29, 33, 60, 0.05);
+  padding: 30px;
+  border-radius: 8px;
+  border: 1px solid #1D213C;
+}
+
+/* Заголовки */
+.content-title {
+  font-size: 1.8rem;
+  font-weight: 600;
+  margin-bottom: 20px;
+  color: #1D213C;
+}
+
+.content-subtitle {
+  font-size: 1.8rem;
+  font-weight: 600;
+  margin-bottom: 20px;
+  color: #1D213C;
+}
+
+/* Текстовые блоки */
+.content-text-block {
+  line-height: 1.6;
+  font-size: 1.1rem;
+  margin-bottom: 40px;
+  padding-bottom: 40px;
+  border-bottom: 1px solid rgba(29, 33, 60, 0.1);
+}
+
+/* FAQ */
+.faq-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.faq-item {
+  padding: 15px;
+  border-bottom: 1px solid rgba(29, 33, 60, 0.1);
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.faq-item:hover {
+  background-color: rgba(29, 33, 60, 0.05);
+}
+
+/* Футер */
+.content-footer {
+  max-width: 1200px;
+  margin: 60px auto 0;
+  padding: 0 20px;
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  border-top: 1px solid rgba(29, 33, 60, 0.1);
+  padding-top: 30px;
+}
+
+.footer-links {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.footer-link {
+  color: #ff4d1f;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.footer-link:hover {
+  color: #d13e1a;
+  text-decoration: underline;
+}
+
+.footer-copyright {
+  color: rgba(29, 33, 60, 0.6);
+  text-align: right;
+  line-height: 1.5;
+}
+
+@media (max-width: 768px) {
+  .content-title {
+    font-size: 2rem;
+  }
+  
+  .content-subtitle {
+    font-size: 1.5rem;
+  }
+  
+  .content-footer {
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  .footer-copyright {
+    text-align: left;
+  }
+}
+
+.news-carousel {
+  display: flex;
+  gap: 20px;
+  overflow-x: auto;
+}
+
+.news-card {
+  min-width: 260px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  padding: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  color: #1D213C;
+}
+
+.news-card img {
+  width: 100%;
+  border-radius: 6px;
+  margin-bottom: 10px;
+}
+
+.news-card span {
+  display: block;
+  margin-top: 6px;
+  color: #ff4d1f;
+  font-weight: 500;
+  font-size: 0.9rem;
+}
+
+.dark-footer {
+  background-color: #1D213C;
+  color: white;
+  padding-top: 40px;
+}
+
+.dark-footer .footer-link {
+  color: #ff4d1f;
+}
+
+.footer-center-logo {
+  text-align: center;
+  font-size: 0.95rem;
+  line-height: 1.4;
+  color: white;
+}
+
+.footer-social {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  text-align: right;
 }

@@ -12,8 +12,10 @@ import guestLoungeImg from '../../assets/Locations/IMG_2875.png';
 import smallCoworkingImg from '../../assets/Locations/22e0f3d882004a08635bdb9d952db270.png';
 import largeCoworkingImg from '../../assets/Locations/Kovorking_spb_1.png';
 import hallImg from '../../assets/Locations/8123ec3f19e41da39a191929fa693d27.png';
+import { createBooking, Booking } from '../../api';
 
 interface Space {
+  id: number;
   title: string;
   capacity: string;
   description: string;
@@ -22,8 +24,6 @@ interface Space {
 
 const SpaceOverview: React.FC = () => {
   const [currentIndex, setCurrentIndex] = useState<number | null>(null);
-
-  // Для формы бронирования
   const [bookingLocation, setBookingLocation] = useState('');
   const [bookingDate, setBookingDate] = useState('');
   const [bookingTime, setBookingTime] = useState('');
@@ -42,24 +42,28 @@ const SpaceOverview: React.FC = () => {
 
   const spaces: Space[] = [
     {
+      id: 1,
       title: 'Открытая гостиная',
       capacity: '10 – 20 чел.',
       description: 'Пространство для встреч, отдыха и неформального общения',
       image: guestLoungeImg,
     },
     {
+      id: 2,
       title: 'Малый коворкинг',
       capacity: '1 – 6 чел.',
       description: 'Малая рабочая зона для индивидуальной работы или небольших групп',
       image: smallCoworkingImg,
     },
     {
+      id: 3,
       title: 'Большой коворкинг',
       capacity: '1 – 16 чел.',
       description: 'Просторное помещение для учёбы, работы в командах и проектов',
       image: largeCoworkingImg,
     },
     {
+      id: 4,
       title: 'Холл',
       capacity: '1 – 6 чел.',
       description: 'Универсальное пространство для мероприятий, выставок и отдыха',
@@ -74,7 +78,7 @@ const SpaceOverview: React.FC = () => {
     'Бронирование осуществляется через онлайн-систему на данном сайте.',
     'Необходимо для использования отдельных зон (открытая гостиная, малый/большой коворкинг, холл).',
   ];
-
+  
   // Навигация слайдера
   const handleCardClick = (index: number) => {
     setCurrentIndex(index);
@@ -107,16 +111,34 @@ const SpaceOverview: React.FC = () => {
   ];
 
   // Обработка изменения формы
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleBookingSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    // Тут можно добавить логику отправки данных на сервер
-    alert(`Спасибо за бронирование!\nЛокация: ${bookingLocation}\nДата: ${bookingDate}\nВремя: ${bookingTime}\nИмя: ${formData.name}`);
-    // Сброс формы
+   const handleBookingSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+
+  try {
+    const selectedSpace = spaces.find(s => s.title === bookingLocation);
+    if (!selectedSpace) throw new Error('Локация не найдена');
+
+    const [startTime] = bookingTime.split(' - ');
+    const dateStart = new Date(`${bookingDate}T${startTime}:00`);
+    const dateEnd = new Date(dateStart.getTime() + 2 * 60 * 60 * 1000);
+
+    const booking: Booking = {
+      userId: formData.telegramNick,
+      locationId: selectedSpace.id,
+      dateStart: dateStart.toISOString(),
+      dateEnd: dateEnd.toISOString(),
+      purpose: formData.purpose,
+    };
+
+    await createBooking(booking);
+    alert(`Спасибо за бронирование!\nЛокация: ${bookingLocation}\nДата: ${bookingDate}\nВремя: ${bookingTime}`);
+
+    // Сброс
     setBookingLocation('');
     setBookingDate('');
     setBookingTime('');
@@ -128,7 +150,10 @@ const SpaceOverview: React.FC = () => {
       peopleCount: '',
       telegramNick: '',
     });
-  };
+  } catch (error: any) {
+    alert(`Ошибка бронирования: ${error.message}`);
+  }
+};
 
   return (
     <div style={{ backgroundColor: '#EBE6E2' }}>

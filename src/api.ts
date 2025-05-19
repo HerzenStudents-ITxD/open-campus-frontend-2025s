@@ -169,16 +169,25 @@ export async function deleteEvent(id: number, reason: string): Promise<void> {
 }
 
 export interface Booking {
-  id: string;
-  date: string;
-  location: string;
-  user: string;
+  userId: string;
+  locationId: number;
+  dateStart: string; // ISO строка, например "2025-05-19T14:00"
+  dateEnd: string;
+  purpose: string;
+  status?: string; // опционально, сервер может сам установить
 }
 
-export async function fetchBookings(): Promise<Booking[]> {
-  const res = await fetch(`${API_BASE}/booking`);
-  if (!res.ok) throw new Error("Ошибка при загрузке бронирований");
-  return await res.json();
+export async function createBooking(data: Booking): Promise<void> {
+  const res = await fetch(`${API_BASE}/booking`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  });
+
+  if (!res.ok) {
+    const errText = await res.text();
+    throw new Error(errText || "Ошибка при создании бронирования");
+  }
 }
 
 export interface NewsData {

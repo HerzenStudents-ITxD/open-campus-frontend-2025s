@@ -1,45 +1,23 @@
-import React, { useEffect, useState } from 'react';  
+import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import '../styles/UserAccount.css';
 import logoImage from '../assets/logo.png';
-import calendarIcon from '../assets/calendar-icon.png';
-import Calendar from 'react-calendar';
 import '../styles/Calendar.css';
 import ChangePasswordModal from '../modal/ChangePasswordModal';
 import axios from 'axios';
-import { useTicketContext } from '../context/TicketContext';
-import MyTickets from '../tickets/MyTickets'; // путь укажи правильный
+import MyTickets from '../tickets/MyTickets';
 import MyBookings from '../tickets/MyBooking';
 
-
 export default function UserAccount() {
-
-  //   // 🧪 Временная авторизация для разработки
-  // useEffect(() => {
-  //   const token = localStorage.getItem('token');
-  //   const userId = localStorage.getItem('userId');
-
-  //   // Если пользователь не вошел, создаем фиктивную авторизацию
-  //   if (!token || !userId) {
-  //     localStorage.setItem('token', 'mock-token');
-  //     localStorage.setItem('userId', 'mock-user-id');
-  //     localStorage.setItem('fullName', 'Иванов Иван Иванович');
-  //   }
-  // }, []);
-
-
-
   const navigate = useNavigate();
   const [fullName, setFullName] = useState('');
-  const [position, setPosition] = useState('');
+  const [password, setPassword] = useState('');
   const [isSaved, setIsSaved] = useState(false);
   const [error, setError] = useState('');
   const [passwordError, setPasswordError] = useState('');
   const [buttonClicked, setButtonClicked] = useState(false);
   const [photo, setPhoto] = useState<string | null>(null);
   const [showPasswordModal, setShowPasswordModal] = useState(false);
-
-
 
   const isPasswordValid = (password: string) => {
     const pattern = /^(?=.*[A-Za-z])[A-Za-z0-9]{8,}$/;
@@ -50,13 +28,6 @@ export default function UserAccount() {
     const namePattern = /^[А-ЯЁ][а-яё-]+ [А-ЯЁ][а-яё-]+ [А-ЯЁ][а-яё-]+$/i;
     return namePattern.test(name.trim());
   };
-
-
-
-
-
-
-//с этого места заменяла сякие функции чтобы к бэкэнду поделючалось
 
   const handlePhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -76,15 +47,13 @@ export default function UserAccount() {
       const userId = localStorage.getItem('userId');
       if (!userId) return;
 
-      await axios.put(`https://localhost:7299/api/User/${userId}`, formData, {
+      await axios.put(`http://localhost:5241/api/User/${userId}`, formData, {
         headers: {
           Authorization: `Bearer ${token}`,
           'Content-Type': 'multipart/form-data',
         },
       });
 
-
-      // Обновляем фото в интерфейсе можно сказать локально
       const reader = new FileReader();
       reader.onloadend = () => {
         const result = reader.result as string;
@@ -98,12 +67,6 @@ export default function UserAccount() {
     }
   };
 
-
-
-
-
-
-
   useEffect(() => {
     const getProfile = async () => {
       try {
@@ -112,26 +75,16 @@ export default function UserAccount() {
 
         if (!token || !userId) return;
 
-        // // ✅ Если временный пользователь — используем заглушку
-        // if (userId === 'mock-user-id') {
-        //   setFullName(localStorage.getItem('fullName') || 'Иванов Иван Иванович');
-        //   setPosition('');
-        //   setPhoto(null); // Можно подставить тестовую картинку
-        //   setIsSaved(true);
-        //   return;
-        // }
-
-        // 🛑 Реальный запрос к серверу (если пользователь не мок)
-        const response = await axios.get(`https://localhost:7299/api/User/${userId}`, {
+        const response = await axios.get(`http://localhost:5241/api/User/${userId}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         });
 
-        setFullName(response.data.name); // в API поле называется Name
-        setPosition(''); // пароль не возвращается с сервера
+        setFullName(response.data.name);
+        setPassword('');
         if (response.data.avatar) setPhoto(response.data.avatar);
-        setIsSaved(true);
+        // setIsSaved(true); // ❌ больше не блокируем тут
       } catch (error) {
         console.error('Ошибка загрузки профиля', error);
       }
@@ -140,39 +93,17 @@ export default function UserAccount() {
     getProfile();
   }, []);
 
-
-
-
-
-
-
-  // const handleLogin = () => {
-  //   if (!validateFullName(fullName) || !isPasswordValid(position)) {
-  //     setError('Введите корректные данные');
-  //     return;
-  //   }
-  //   localStorage.setItem("fullName", fullName);
-  //   localStorage.setItem("position", position);
-  //   setIsSaved(true);
-  //   setError('');
-  //   setButtonClicked(true);
-  // };
   const handleLogin = async () => {
-    if (!validateFullName(fullName) || !isPasswordValid(position)) {
+    if (!validateFullName(fullName) || !isPasswordValid(password)) {
       setError('Введите корректные данные');
-      console.log('Ошибка валидации:', { fullName, position });
       return;
     }
 
     try {
-      console.log('Отправка запроса на логин с данными:', { fullName, position });
-
       const response = await axios.post('http://localhost:5241/api/User/login', {
         fullName,
-        password: position,
+        password,
       });
-
-      console.log('Ответ сервера:', response.data);
 
       const token = response.data.token;
       const userId = response.data.userId;
@@ -182,51 +113,35 @@ export default function UserAccount() {
       setError('');
       setButtonClicked(true);
 
-      // Загружаем профиль сразу после логина
-      const profileResponse = await axios.get(`https://localhost:7299/api/User/${userId}`, {
+      const profileResponse = await axios.get(`http://localhost:5241/api/User/${userId}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
-      console.log('Данные профиля:', profileResponse.data);
-
       setFullName(profileResponse.data.name);
-      setPosition('');
+      setPassword('');
       if (profileResponse.data.avatar) setPhoto(profileResponse.data.avatar);
-      setIsSaved(true);
+      setIsSaved(true); // ✅ блокируем только после логина
     } catch (error) {
       console.error('Ошибка логина или запроса профиля:', error);
       setError('Неверные данные или ошибка сервера');
     }
   };
 
-
-  
-
-
-
-
-
-
   const handleRegister = async () => {
-    if (!validateFullName(fullName) || !isPasswordValid(position)) {
+    if (!validateFullName(fullName) || !isPasswordValid(password)) {
       setError('Введите корректные данные');
-      console.log('Ошибка валидации регистрации:', { fullName, position });
       return;
     }
 
     try {
-      console.log('Отправка запроса на регистрацию с данными:', { fullName, position });
-
       const response = await axios.post('http://localhost:5241/api/User', {
         fullName,
-        password: position,
+        password,
       });
-
-      console.log('Ответ сервера при регистрации:', response.data);
 
       alert('Регистрация успешна');
       setButtonClicked(true);
-      setIsSaved(true);
+      setIsSaved(true); // ✅ блокируем только после регистрации
       setError('');
     } catch (error) {
       console.error('Ошибка при регистрации:', error);
@@ -234,30 +149,17 @@ export default function UserAccount() {
     }
   };
 
-
-
-
-
-
-
   const handleLogout = () => {
     localStorage.removeItem('token');
     setPhoto(null);
     setFullName('');
-    setPosition('');
+    setPassword('');
     setIsSaved(false);
     setButtonClicked(false);
     navigate('/');
   };
 
-
-
-
-
-
-//а тут заменять прекратила
-
-  const isFormComplete = fullName.trim() !== '' && isPasswordValid(position);
+  const isFormComplete = fullName.trim() !== '' && isPasswordValid(password);
 
   return (
     <div className="user-account-container">
@@ -308,10 +210,10 @@ export default function UserAccount() {
             <input
               type="password"
               className="form-control"
-              value={position}
+              value={password}
               onChange={(e) => {
                 const value = e.target.value;
-                setPosition(value);
+                setPassword(value);
 
                 if (!isPasswordValid(value)) {
                   setPasswordError('Пароль должен быть не короче 8 символов и содержать только латинские буквы и цифры');
@@ -344,138 +246,13 @@ export default function UserAccount() {
           </div>
         </div>
 
-
-
-
-
         <MyTickets />
-        {/* БИЛЕТЫ
-        <h2 className="section-title">Мои билеты</h2>
-
-        {!isSaved ? (
-          <div className="more-event">
-            <span>Пока пусто!</span>
-          </div>
-        ) : (
-          <>
-            <div className="booking-card">
-              <div className="booking-header">
-                <strong className="col-event">Мероприятие</strong>
-                <strong className="col-booked d-flex align-items-center gap-2">
-                  Забронировано
-                  <img
-                    src={calendarIcon}
-                    alt="calendar"
-                    width="26"
-                    height="26"
-                    style={{ cursor: 'pointer' }}
-                    onClick={() => setShowTicketCalendar(!showTicketCalendar)}
-                  />
-                </strong>
-              </div>
-
-              {showTicketCalendar && (
-                <div style={{ marginTop: '10px', marginLeft: '150px' }}>
-                  <Calendar
-                    value={new Date('2025-11-16')}
-                    tileClassName={({ date }) =>
-                      date.toDateString() === new Date('2025-11-16').toDateString()
-                        ? 'highlight'
-                        : null
-                    }
-                  />
-                </div>
-              )}
-
-              <div className="booking-content">
-                <div className="col-event event-details">
-                  Цикл лекций "Искусство XX века". Блок первый. Искусство авангарда. Лекция первая. Ранний европейский авангард
-                  <div className="location-info">
-                    <strong>Локация:</strong>{' '}
-                    <Link to="/locations" className="location-link">открытая гостиная</Link>
-                  </div>
-                </div>
-                <div className="col-booked centered-texts">16.11.2025; 15:00</div>
-              </div>
-            </div>
-          </>
-        )}
-        <div className="more-events">
-          <span>Посетите больше мероприятий!</span>
-          <Link to="/events" className="btn-dark-custom">Мероприятия</Link>
-        </div> */}
-
-
-
         <MyBookings />
-        {/* БРОНИ
-
-        <h2 className="section-title" style={{ marginTop: '40px' }}>Мои брони</h2>
-
-        {!isSaved ? (
-          <div className="more-event">
-            <span>Пока пусто!</span>
-          </div>
-        ) : (
-          <>
-            <div className="booking-card">
-              <div className="booking-header">
-                <strong className="col-events">Помещение</strong>
-                <strong className="col-booked d-flex align-items-center gap-2">
-                  Забронировано
-                  <img
-                    src={calendarIcon}
-                    alt="calendar"
-                    width="26"
-                    height="26"
-                    style={{ cursor: 'pointer' }}
-                    onClick={() => setShowBookingCalendar(!showBookingCalendar)}
-                  />
-                </strong>
-                <strong className="col-status">Длительность</strong>
-              </div>
-
-              {showBookingCalendar && (
-                <div style={{ marginTop: '10px' }}>
-                  <Calendar
-                    value={new Date('2025-11-13')}
-                    tileClassName={({ date }) =>
-                      date.toDateString() === new Date('2025-11-13').toDateString()
-                        ? 'highlight'
-                        : null
-                    }
-                  />
-                </div>
-              )}
-
-              <div className="booking-content">
-                <div className="event-details">
-                  <Link to="/locations" className="location-link">Большой коворкинг</Link>
-                </div>
-                <div className="col-booked centered-text">13.11.2025; 14:30</div>
-                <div className="col-status centered-text">1,5 часа</div>
-              </div>
-            </div>
-          </>
-        )}
-        <div className="more-events">
-          <span>Забронируйте помещение!</span>
-          <Link to="/locations" className="btn-dark-custom">Локации</Link>
-        </div> */}
-
-
-
-
-
-
-
-
 
         <h2 className="section-title" style={{ marginTop: '40px' }}>История</h2>
         <div className="more-event">
           <span>Пока пусто!</span>
         </div>
-
       </div>
 
       <div className="fixed-actions">
@@ -489,7 +266,6 @@ export default function UserAccount() {
 
         <a href="#" onClick={handleLogout} className="logout-link">Выйти из аккаунта</a>
       </div>
-
     </div>
   );
 }

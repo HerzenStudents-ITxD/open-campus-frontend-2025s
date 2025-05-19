@@ -7,6 +7,7 @@ import About from "./pages/About";
 import AboutEvent from "./pages/AboutEvent";
 import UserAccount from "./pages/UserAccount";
 import NotFound from "./pages/NotFound";
+import News from './pages/News';
 
 // Страницы админки
 import AdminDashboard from "./admin/pages/AdminDashBoard";
@@ -26,7 +27,9 @@ function AppRoutes() {
     location.pathname.startsWith("/admin") ||
     location.pathname === "/user-account" ||
     location.pathname === "/" || // как в версии одногруппников
-    location.pathname.startsWith("/locations"); // как у тебя
+    location.pathname.startsWith("/locations") || // как у тебя
+    location.pathname === "/events" ||
+    location.pathname === "/news";
 
   return (
     <>
@@ -50,6 +53,7 @@ function AppRoutes() {
         <Route path="/about-event" element={<AboutEvent />} />
         <Route path="/user-account" element={<UserAccount />} />
         <Route path="/profile" element={<UserAccount />} />
+        <Route path="/news" element={<News />} />
         <Route path="*" element={<NotFound />} />
 
         {/* Админка с макетом */}

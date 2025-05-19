@@ -30,14 +30,13 @@ export default function LocationList({ locations, onDelete, onEdit }: LocationLi
 
       const updatedLocation = {
         ...rest,
-        imageFile: newImageFile, // может быть undefined, это нормально
+        imageFile: newImageFile,
       };
 
       onEdit(updatedLocation);
       setEditing(null);
     }
   };
-
 
   const handleField = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -70,7 +69,11 @@ export default function LocationList({ locations, onDelete, onEdit }: LocationLi
         <p>Локации пока не добавлены.</p>
       ) : (
         locations.map((loc) => (
-          <Card className="mb-3" key={loc.id}>
+          <Card
+            className="mb-3"
+            style={{ maxWidth: "600px" }}
+            key={loc.id}
+          >
             <Card.Body>
               <Card.Title>{loc.name}</Card.Title>
               <Card.Subtitle className="mb-2 text-muted">
@@ -124,7 +127,7 @@ export default function LocationList({ locations, onDelete, onEdit }: LocationLi
       </Modal>
 
       {editing && (
-        <Card className="mt-4 p-3 shadow-sm">
+        <Card className="mt-4 p-3 shadow-sm" style={{ maxWidth: "600px" }}>
           <h4 className="mb-3">Редактировать локацию</h4>
           <Form>
             <Form.Group className="mb-3">

@@ -64,7 +64,7 @@ export default function EventList({ events, onDelete, onUpdate }: EventListProps
               <Card.Body>
                 <Card.Title>{event.title}</Card.Title>
                 <Card.Subtitle className="mb-2 text-muted">
-                  {event.date} — {event.location}
+                  {new Date(event.date).toLocaleDateString("ru-RU")} — {event.location}
                 </Card.Subtitle>
                 {event.image && (
                   <Image
@@ -78,7 +78,11 @@ export default function EventList({ events, onDelete, onUpdate }: EventListProps
                 <Card.Text>{event.description}</Card.Text>
                 <div className="small text-muted">
                   Организатор: {event.organizer} <br />
-                  Добавлено: {event.createdAt} ({event.createdBy})
+                  {event.createdAt && (
+                    <>
+                      Добавлено: {new Date(event.createdAt).toLocaleString("ru-RU")} ({event.createdBy})
+                    </>
+                  )}
                 </div>
                 <div className="mt-2">
                   <Button variant="primary" size="sm" className="me-2" onClick={() => handleEdit(event)}>

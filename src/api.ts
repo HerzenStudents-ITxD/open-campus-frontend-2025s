@@ -271,10 +271,20 @@ export interface EventData {
 const EVENTS_API_URL = "http://localhost:5241/api/event";
 
 // Получение всех мероприятий
-export const fetchEvents = async (): Promise<EventData[]> => {
-  const res = await axios.get<EventData[]>(EVENTS_API_URL);
-  return res.data;
-};
+// export const fetchEvents = async (): Promise<EventData[]> => {
+//   const res = await axios.get(EVENTS_API_URL);
+//   return res.data.map((event: any) => ({
+//     ...event,
+//     image: event.imagePath || event.imageUrl || null
+//   }));
+// };
+
+export async function fetchEvents(): Promise<EventData[]> {
+  const res = await fetch(EVENTS_API_URL);
+  if (!res.ok) throw new Error("Ошибка при загрузке мероприятий");
+  return await res.json();
+}
+
 
 // Создание мероприятия
 export const createEvent = async (data: EventData): Promise<EventData> => {
@@ -319,3 +329,4 @@ export const deleteEvent = async (id: string, reason: string): Promise<void> => 
     headers: { "Content-Type": "application/json" },
   });
 };
+

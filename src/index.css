@@ -150,7 +150,6 @@
   text-transform: lowercase;
 }
 
-
 a {
   font-weight: 500;
   color: #1D213C;
@@ -368,4 +367,13 @@ button:focus-visible {
 
 .fade-in-fast {
   animation: fadeInFast 0.2s ease-in-out;
+}
+
+/* Ограничиваем ширину всех инпутов и текстовых полей только в админке */
+.admin-wrapper input,
+.admin-wrapper textarea,
+.admin-wrapper select {
+  max-width: 500px;
+  width: 100%;
+  box-sizing: border-box;
 }

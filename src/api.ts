@@ -1,3 +1,5 @@
+import axios from "axios";
+
 export interface Location {
     id: number;
     name: string;
@@ -94,79 +96,79 @@ export async function changePassword(
   }
 }
 
-export interface Event {
-  id: number;
-  title: string;
-  description: string;
-  date: string;
-  location: string;
-  organizer: string;
-  createdAt: string;
-  createdBy: string;
-  imageUrl?: string;
-}
+// export interface Event {
+//   id: number;
+//   title: string;
+//   description: string;
+//   date: string;
+//   location: string;
+//   organizer: string;
+//   createdAt: string;
+//   createdBy: string;
+//   imageUrl?: string;
+// }
 
-const EVENTS_API_URL = "http://localhost:5241/api/event";
+// const EVENTS_API_URL = "http://localhost:5241/api/event";
 
-export async function fetchEvents(): Promise<Event[]> {
-  const res = await fetch(EVENTS_API_URL);
-  if (!res.ok) throw new Error("Ошибка при загрузке мероприятий");
-  return await res.json();
-}
+// export async function fetchEvents(): Promise<Event[]> {
+//   const res = await fetch(EVENTS_API_URL);
+//   if (!res.ok) throw new Error("Ошибка при загрузке мероприятий");
+//   return await res.json();
+// }
 
-export async function createEvent(data: Omit<Event, "id" | "imageUrl"> & { image?: File }): Promise<Event> {
-  const formData = new FormData();
-  formData.append("Title", data.title);
-  formData.append("Description", data.description);
-  formData.append("Date", data.date);
-  formData.append("Location", data.location);
-  formData.append("Organizer", data.organizer);
-  formData.append("CreatedAt", data.createdAt);
-  formData.append("CreatedBy", data.createdBy);
-  if (data.image) {
-    formData.append("Image", data.image);
-  }
+// export async function createEvent(data: Omit<Event, "id" | "imageUrl"> & { image?: File }): Promise<Event> {
+//   const formData = new FormData();
+//   formData.append("Title", data.title);
+//   formData.append("Description", data.description);
+//   formData.append("Date", data.date);
+//   formData.append("Location", data.location);
+//   formData.append("Organizer", data.organizer);
+//   formData.append("CreatedAt", data.createdAt);
+//   formData.append("CreatedBy", data.createdBy);
+//   if (data.image) {
+//     formData.append("Image", data.image);
+//   }
 
-  const res = await fetch(EVENTS_API_URL, {
-    method: "POST",
-    body: formData,
-  });
+//   const res = await fetch(EVENTS_API_URL, {
+//     method: "POST",
+//     body: formData,
+//   });
 
-  if (!res.ok) throw new Error("Ошибка при создании мероприятия");
-  return await res.json();
-}
+//   if (!res.ok) throw new Error("Ошибка при создании мероприятия");
+//   return await res.json();
+// }
 
-export async function updateEvent(event: Event & { image?: File }): Promise<Event> {
-  const formData = new FormData();
-  formData.append("Title", event.title);
-  formData.append("Description", event.description);
-  formData.append("Date", event.date);
-  formData.append("Location", event.location);
-  formData.append("Organizer", event.organizer);
-  formData.append("CreatedAt", event.createdAt);
-  formData.append("CreatedBy", event.createdBy);
-  if (event.image) {
-    formData.append("Image", event.image);
-  }
+// export async function updateEvent(event: Event & { image?: File }): Promise<Event> {
+//   const formData = new FormData();
+//   formData.append("Title", event.title);
+//   formData.append("Description", event.description);
+//   formData.append("Date", event.date);
+//   formData.append("Location", event.location);
+//   formData.append("Organizer", event.organizer);
+//   formData.append("CreatedAt", event.createdAt);
+//   formData.append("CreatedBy", event.createdBy);
+//   if (event.image) {
+//     formData.append("Image", event.image);
+//   }
 
-  const res = await fetch(`${EVENTS_API_URL}/${event.id}`, {
-    method: "PUT",
-    body: formData,
-  });
+//   const res = await fetch(`${EVENTS_API_URL}/${event.id}`, {
+//     method: "PUT",
+//     body: formData,
+//   });
 
-  if (!res.ok) throw new Error("Ошибка при обновлении мероприятия");
-  return await res.json();
-}
+//   if (!res.ok) throw new Error("Ошибка при обновлении мероприятия");
+//   return await res.json();
+// }
 
-export async function deleteEvent(id: number, reason: string): Promise<void> {
-  const res = await fetch(`${EVENTS_API_URL}/${id}`, {
-    method: "DELETE",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ reason }),
-  });
+// export async function deleteEvent(id: number, reason: string): Promise<void> {
+//   const res = await fetch(`${EVENTS_API_URL}/${id}`, {
+//     method: "DELETE",
+//     headers: { "Content-Type": "application/json" },
+//     body: JSON.stringify({ reason }),
+//   });
 
-  if (!res.ok) throw new Error("Ошибка при удалении мероприятия");
-}
+//   if (!res.ok) throw new Error("Ошибка при удалении мероприятия");
+// }
 
 export interface Booking {
   id: string;
@@ -252,4 +254,68 @@ export async function deleteNews(id: string, reason: string): Promise<void> {
   if (!res.ok) throw new Error("Ошибка при удалении новости");
 }
 
+// Тип мероприятия
+export interface EventData {
+  id: string;
+  title: string;
+  description: string;
+  date: string;
+  location: string;
+  organizer: string;
+  createdAt?: string;
+  createdBy: string;
+  image: File | string | null; // файл для нового или строка (url) для существующего
+}
 
+
+const EVENTS_API_URL = "http://localhost:5241/api/event";
+
+// Получение всех мероприятий
+export const fetchEvents = async (): Promise<EventData[]> => {
+  const res = await axios.get<EventData[]>(EVENTS_API_URL);
+  return res.data;
+};
+
+// Создание мероприятия
+export const createEvent = async (data: EventData): Promise<EventData> => {
+  const formData = new FormData();
+  formData.append("title", data.title);
+  formData.append("description", data.description);
+  formData.append("date", data.date);
+  formData.append("location", data.location);
+  formData.append("organizer", data.organizer);
+  formData.append("createdBy", data.createdBy);
+  if (data.image) formData.append("image", data.image);
+
+  const res = await axios.post(EVENTS_API_URL, formData, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
+
+  return res.data;
+};
+
+// Обновление мероприятия
+export const updateEvent = async (id: string, data: EventData): Promise<EventData> => {
+  const formData = new FormData();
+  formData.append("title", data.title);
+  formData.append("description", data.description);
+  formData.append("date", data.date);
+  formData.append("location", data.location);
+  formData.append("organizer", data.organizer);
+  formData.append("createdBy", data.createdBy);
+  if (data.image) formData.append("image", data.image);
+
+  const res = await axios.put(`${EVENTS_API_URL}/${id}`, formData, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
+
+  return res.data;
+};
+
+// Удаление мероприятия
+export const deleteEvent = async (id: string, reason: string): Promise<void> => {
+  await axios.delete(`${EVENTS_API_URL}/${id}`, {
+    data: { reason },
+    headers: { "Content-Type": "application/json" },
+  });
+};

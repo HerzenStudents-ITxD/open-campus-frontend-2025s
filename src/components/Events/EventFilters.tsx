@@ -1,6 +1,6 @@
 //import "./EventFilters.css";
 import { useState } from "react";
-import "D:/open-campus-frontend-2025s/src/styles/Events.css";
+import "../../styles/Events.css";
 
 const categories = [
   "Лекции",

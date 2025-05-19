@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import '../styles/UserAccount.css';
 import logoImage from '../assets/logo.png';
-import calendarIcon from '../assets/calendar-icon.png';
-import Calendar from 'react-calendar';
+// import calendarIcon from '../assets/calendar-icon.png';
+// import Calendar from 'react-calendar';
 import '../styles/Calendar.css';
 import ChangePasswordModal from '../modal/ChangePasswordModal';
 import axios from 'axios';
@@ -31,13 +31,14 @@ export default function UserAccount() {
 
   const navigate = useNavigate();
   const [fullName, setFullName] = useState('');
-  const [position, setPosition] = useState('');
+  const [password, setPassword] = useState('');
   const [isSaved, setIsSaved] = useState(false);
   const [error, setError] = useState('');
   const [passwordError, setPasswordError] = useState('');
   const [buttonClicked, setButtonClicked] = useState(false);
   const [photo, setPhoto] = useState<string | null>(null);
   const [showPasswordModal, setShowPasswordModal] = useState(false);
+
 
 
 
@@ -107,15 +108,16 @@ export default function UserAccount() {
   useEffect(() => {
     const getProfile = async () => {
       try {
+        // localStorage.removeItem("userId");
         const token = localStorage.getItem('token');
         const userId = localStorage.getItem('userId');
 
         if (!token || !userId) return;
 
-        // // ✅ Если временный пользователь — используем заглушку
+        // // // ✅ Если временный пользователь — используем заглушку
         // if (userId === 'mock-user-id') {
         //   setFullName(localStorage.getItem('fullName') || 'Иванов Иван Иванович');
-        //   setPosition('');
+        //   setPassword('');
         //   setPhoto(null); // Можно подставить тестовую картинку
         //   setIsSaved(true);
         //   return;
@@ -129,7 +131,7 @@ export default function UserAccount() {
         });
 
         setFullName(response.data.name); // в API поле называется Name
-        setPosition(''); // пароль не возвращается с сервера
+        setPassword(''); // пароль не возвращается с сервера
         if (response.data.avatar) setPhoto(response.data.avatar);
         setIsSaved(true);
       } catch (error) {
@@ -158,18 +160,18 @@ export default function UserAccount() {
   //   setButtonClicked(true);
   // };
   const handleLogin = async () => {
-    if (!validateFullName(fullName) || !isPasswordValid(position)) {
+    if (!validateFullName(fullName) || !isPasswordValid(password)) {
       setError('Введите корректные данные');
-      console.log('Ошибка валидации:', { fullName, position });
+      console.log('Ошибка валидации:', { fullName, password });
       return;
     }
 
     try {
-      console.log('Отправка запроса на логин с данными:', { fullName, position });
+      console.log('Отправка запроса на логин с данными:', { fullName, password });
 
-      const response = await axios.post('http://localhost:5241/api/User/login', {
+      const response = await axios.post('https://localhost:7299/api/User/login', {
         fullName,
-        password: position,
+        password,
       });
 
       console.log('Ответ сервера:', response.data);
@@ -190,7 +192,7 @@ export default function UserAccount() {
       console.log('Данные профиля:', profileResponse.data);
 
       setFullName(profileResponse.data.name);
-      setPosition('');
+      setPassword('');
       if (profileResponse.data.avatar) setPhoto(profileResponse.data.avatar);
       setIsSaved(true);
     } catch (error) {
@@ -208,18 +210,18 @@ export default function UserAccount() {
 
 
   const handleRegister = async () => {
-    if (!validateFullName(fullName) || !isPasswordValid(position)) {
+    if (!validateFullName(fullName) || !isPasswordValid(password)) {
       setError('Введите корректные данные');
-      console.log('Ошибка валидации регистрации:', { fullName, position });
+      console.log('Ошибка валидации регистрации:', { fullName, password });
       return;
     }
 
     try {
-      console.log('Отправка запроса на регистрацию с данными:', { fullName, position });
+      console.log('Отправка запроса на регистрацию с данными:', { fullName, password });
 
-      const response = await axios.post('http://localhost:5241/api/User', {
+      const response = await axios.post('https://localhost:7299/api/User', {
         fullName,
-        password: position,
+        password,
       });
 
       console.log('Ответ сервера при регистрации:', response.data);
@@ -244,7 +246,7 @@ export default function UserAccount() {
     localStorage.removeItem('token');
     setPhoto(null);
     setFullName('');
-    setPosition('');
+    setPassword('');
     setIsSaved(false);
     setButtonClicked(false);
     navigate('/');
@@ -257,7 +259,7 @@ export default function UserAccount() {
 
 //а тут заменять прекратила
 
-  const isFormComplete = fullName.trim() !== '' && isPasswordValid(position);
+  const isFormComplete = fullName.trim() !== '' && isPasswordValid(password);
 
   return (
     <div className="user-account-container">
@@ -308,10 +310,10 @@ export default function UserAccount() {
             <input
               type="password"
               className="form-control"
-              value={position}
+              value={password}
               onChange={(e) => {
                 const value = e.target.value;
-                setPosition(value);
+                setPassword(value);
 
                 if (!isPasswordValid(value)) {
                   setPasswordError('Пароль должен быть не короче 8 символов и содержать только латинские буквы и цифры');
@@ -347,125 +349,9 @@ export default function UserAccount() {
 
 
 
-
         <MyTickets />
-        {/* БИЛЕТЫ
-        <h2 className="section-title">Мои билеты</h2>
-
-        {!isSaved ? (
-          <div className="more-event">
-            <span>Пока пусто!</span>
-          </div>
-        ) : (
-          <>
-            <div className="booking-card">
-              <div className="booking-header">
-                <strong className="col-event">Мероприятие</strong>
-                <strong className="col-booked d-flex align-items-center gap-2">
-                  Забронировано
-                  <img
-                    src={calendarIcon}
-                    alt="calendar"
-                    width="26"
-                    height="26"
-                    style={{ cursor: 'pointer' }}
-                    onClick={() => setShowTicketCalendar(!showTicketCalendar)}
-                  />
-                </strong>
-              </div>
-
-              {showTicketCalendar && (
-                <div style={{ marginTop: '10px', marginLeft: '150px' }}>
-                  <Calendar
-                    value={new Date('2025-11-16')}
-                    tileClassName={({ date }) =>
-                      date.toDateString() === new Date('2025-11-16').toDateString()
-                        ? 'highlight'
-                        : null
-                    }
-                  />
-                </div>
-              )}
-
-              <div className="booking-content">
-                <div className="col-event event-details">
-                  Цикл лекций "Искусство XX века". Блок первый. Искусство авангарда. Лекция первая. Ранний европейский авангард
-                  <div className="location-info">
-                    <strong>Локация:</strong>{' '}
-                    <Link to="/locations" className="location-link">открытая гостиная</Link>
-                  </div>
-                </div>
-                <div className="col-booked centered-texts">16.11.2025; 15:00</div>
-              </div>
-            </div>
-          </>
-        )}
-        <div className="more-events">
-          <span>Посетите больше мероприятий!</span>
-          <Link to="/events" className="btn-dark-custom">Мероприятия</Link>
-        </div> */}
-
-
 
         <MyBookings />
-        {/* БРОНИ
-
-        <h2 className="section-title" style={{ marginTop: '40px' }}>Мои брони</h2>
-
-        {!isSaved ? (
-          <div className="more-event">
-            <span>Пока пусто!</span>
-          </div>
-        ) : (
-          <>
-            <div className="booking-card">
-              <div className="booking-header">
-                <strong className="col-events">Помещение</strong>
-                <strong className="col-booked d-flex align-items-center gap-2">
-                  Забронировано
-                  <img
-                    src={calendarIcon}
-                    alt="calendar"
-                    width="26"
-                    height="26"
-                    style={{ cursor: 'pointer' }}
-                    onClick={() => setShowBookingCalendar(!showBookingCalendar)}
-                  />
-                </strong>
-                <strong className="col-status">Длительность</strong>
-              </div>
-
-              {showBookingCalendar && (
-                <div style={{ marginTop: '10px' }}>
-                  <Calendar
-                    value={new Date('2025-11-13')}
-                    tileClassName={({ date }) =>
-                      date.toDateString() === new Date('2025-11-13').toDateString()
-                        ? 'highlight'
-                        : null
-                    }
-                  />
-                </div>
-              )}
-
-              <div className="booking-content">
-                <div className="event-details">
-                  <Link to="/locations" className="location-link">Большой коворкинг</Link>
-                </div>
-                <div className="col-booked centered-text">13.11.2025; 14:30</div>
-                <div className="col-status centered-text">1,5 часа</div>
-              </div>
-            </div>
-          </>
-        )}
-        <div className="more-events">
-          <span>Забронируйте помещение!</span>
-          <Link to="/locations" className="btn-dark-custom">Локации</Link>
-        </div> */}
-
-
-
-
 
 
 

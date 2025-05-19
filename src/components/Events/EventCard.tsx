@@ -1,5 +1,5 @@
 import { Card, Button } from "react-bootstrap";
-import "D:/open-campus-frontend-2025s/src/styles/Events.css";
+import "../../styles/Events.css";
 
 export default function EventCard({ event }) {
   return (

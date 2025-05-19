@@ -5,7 +5,7 @@ import EventFilters from "../components/Events/EventFilters";
 import NoEventsPlaceholder from "../components/Events/NoEventsPlaceholder";
 import avatar from "../assets/avatar.png";
 import logo from "../assets/logo_home.png";
-import "D:/open-campus-frontend-2025s/src/styles/Events.css";
+import "../styles/Events.css";
 
 const mockEvents = [
   {

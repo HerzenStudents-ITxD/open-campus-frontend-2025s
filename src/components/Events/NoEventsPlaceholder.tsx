@@ -1,6 +1,6 @@
 import { Button } from "react-bootstrap";
 //import "./NoEventsPlaceholder.css";
-import "D:/open-campus-frontend-2025s/src/styles/Events.css";
+import "../../styles/Events.css";
 
 export default function NoEventsPlaceholder() {
   return (

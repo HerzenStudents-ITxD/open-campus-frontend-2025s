@@ -29,6 +29,7 @@ function AppRoutes() {
     location.pathname === "/" || // как в версии одногруппников
     location.pathname.startsWith("/locations") || // как у тебя
     location.pathname === "/events" ||
+    location.pathname === "/about" ||
     location.pathname === "/news";
 
   return (

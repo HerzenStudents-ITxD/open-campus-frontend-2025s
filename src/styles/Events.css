@@ -151,3 +151,41 @@
   color: white;
   border-color: #d53e12;
 }
+
+/* Широкая модалка */
+.custom-modal-width {
+  max-width: 90%;
+  width: 1000px !important;
+}
+
+.custom-modal-width .modal-content {
+  padding: 20px;
+}
+
+/* Адаптивность */
+@media (max-width: 992px) {
+  .custom-modal-width {
+    max-width: 95%;
+    width: 100% !important;
+  }
+  
+  .custom-modal-width .d-flex {
+    flex-direction: column !important;
+  }
+  
+  .custom-modal-width .flex-shrink-0 {
+    width: 100% !important;
+    margin-top: 20px;
+  }
+}
+
+/* Улучшение внешнего вида */
+.event-modal-image {
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.modal-title {
+  font-weight: 600;
+  color: #333;
+}

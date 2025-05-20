@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import '../styles/Home.css';
 import logo from '../assets/logo_home.png';
 import avatar from '../assets/avatar.png';
@@ -18,6 +18,7 @@ const Home: React.FC = () => {
   const [showEventModal, setShowEventModal] = useState(false);
   const [showBookingModal, setShowBookingModal] = useState(false);
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(null);
+  const navigate = useNavigate();
   const toggleFaq = (index: number) => {
     setOpenFaqIndex(openFaqIndex === index ? null : index);
   };
@@ -52,16 +53,68 @@ const Home: React.FC = () => {
     <>
       <div className="home-wrapper">
         {/* Верхняя навигационная панель */}
-        <Navbar className="top-navbar px-4 py-2">
-          <Navbar.Brand as={Link} to="/" className="d-flex align-items-center gap-2">
-            <img src={logo} alt="Логотип" width={170} height={60} />
-          </Navbar.Brand>
+       <Navbar
+  className="top-navbar px-4"
+  style={{
+    backgroundColor: '#1D213C',
+    height: '78px',
+    paddingRight: '24px',
+    zIndex: 1000,
+    width: '100%',         // растянуть на всю ширину
+    maxWidth: '100%',      // убрать ограничение по ширине
+    margin: 0,             // убрать центрирование на Navbar
+  }}
+>
+  <div
+    style={{
+      maxWidth: '1440px',  // ограничение ширины контента
+      margin: '0 auto',    // центрирование
+      width: '100%',
+      display: 'flex',
+      alignItems: 'center',
+    }}
+  >
+    <Navbar.Brand
+      as={Link}
+      to="/"
+      className="d-flex align-items-center gap-2"
+      style={{ cursor: 'pointer', position: 'relative', zIndex: 2000 }}
+    >
+      <img src={logo} alt="Логотип" width={200} height="auto" />
+    </Navbar.Brand>
 
-          <Nav className="ms-auto d-flex align-items-center gap-4" style={{ marginRight: '100px' }}>
-            <Link to="/events" className="nav-link text-white">Мероприятия</Link>
-            <Link to="/locations" className="nav-link text-white">Локации</Link>
-            <Link to="/about" className="nav-link text-white">О пространстве</Link>
-          </Nav>
+    <Nav
+      className="ms-auto d-flex align-items-center gap-4"
+      style={{
+        marginRight: '100px',
+        flexGrow: 1,
+        justifyContent: 'center',
+        gap: '40px',
+        marginLeft: '-140px',
+      }}
+        >
+          <span
+            className="nav-link text-white literal-bold-white"
+            onClick={() => navigate('/events')}
+            style={{ cursor: 'pointer', padding: 0 }}
+          >
+            Мероприятия
+          </span>
+          <span
+            className="nav-link text-white literal-bold-white"
+            onClick={() => navigate('/locations')}
+            style={{ cursor: 'pointer', padding: 0 }}
+          >
+            Локации
+          </span>
+          <span
+            className="nav-link text-white literal-bold-white"
+            onClick={() => navigate('/about')}
+            style={{ cursor: 'pointer', padding: 0 }}
+          >
+            О пространстве
+          </span>
+        </Nav>
 
           <Dropdown align="end" className="ms-auto">
             <Dropdown.Toggle as="button" id="dropdown-avatar" style={{ cursor: 'pointer', background: 'none', border: 'none', padding: 0 }}>
@@ -74,6 +127,7 @@ const Home: React.FC = () => {
               <Dropdown.Item as={Link} to="/admin/dashboard">Редактор</Dropdown.Item>
             </Dropdown.Menu>
           </Dropdown>
+            </div>
         </Navbar>
 
         {/* Центрированный контент */}
